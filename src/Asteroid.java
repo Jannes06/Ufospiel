@@ -1,17 +1,19 @@
 import GLOOP.*;
-public class Asteroid{ 
-    private GLKugel kugel;
-    //[...]
+public class Asteroid {
+    GLKugel asteroid;
 
-    public Asteroid(){
-        kugel = new GLKugel(0,1000,0, 50, "src/img/Krater.jpg");
-        //[...]
+    public Asteroid() {
+        asteroid = new GLKugel((int) (Math.random() * 201), 0, 0, 10);
+
     }
 
-    public void bewegeDich(){
-        kugel.verschiebe(0,-0.5,0);  
-        //[...]
+    public void fallen() {
+        asteroid.verschiebe(0, -1, 0);
+
+        if (asteroid.gibY() < -600) {
+
+
+        }
     }
 
-    //[...]
 }
