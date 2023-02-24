@@ -21,7 +21,7 @@ public class Ufospiel {
         testTafel = new GLTafel(1300, -500, 0, 50, 50);
 
           asteroiden = new Asteroid[1];
-          for (int i = 1; i < 2; i++) {
+          for (int i = 0; i < 1; i++) {
             asteroiden[i] = new Asteroid(100);
         }
 
@@ -74,28 +74,34 @@ public class Ufospiel {
     }
 
     public void asteroidbewegung(){
-        for (int i = 1; i < 2; i++) {
+        for (int i = 0; i < 1; i++) {
             asteroiden[i].fallen();
         }
     }
 
     public void asteroidKoordinatenTest() {
-        for (int i = 1; i < 2; i++) {
+        for (int i = 0; i < 1; i++) {
             asteroidPX = asteroiden[i].gibX();
             testTafel.setzeText("" + asteroidPX, 50);
         }
     }
     public void crash(){
-     for (int i = 1; i < 2; i++);{
+     for (int i = 0; i < 1; i++) {
 
             ufoPX = dasUfo.gibX();
             ufoPY = dasUfo.gibY();
             asteroidPX = asteroiden[i].gibX();
             asteroidPY = asteroiden[i].gibY();
 
+          if (((ufoPX<asteroidPX+100) & (ufoPX>asteroidPX-100)) & ((ufoPY<asteroidPY+100) & (ufoPY>asteroidPY-100)) ) {
+           testTafel.setzeFarbe(1,0,0);
+           Sys.warte(3000);
+              testTafel.setzeFarbe(1,1,1);
+              asteroiden[i].asteroidZuruecksetzen();
+              dasUfo.ufoZuruecksetzen();
+              Sys.warte(2000);
+         }
 
-
-
-        }
+     }
      }
 }

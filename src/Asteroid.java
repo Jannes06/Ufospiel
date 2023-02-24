@@ -11,11 +11,16 @@ public class Asteroid {
         asteroid.verschiebe(0, -0.5, 0);
 
         if (asteroid.gibY() < -600) {
-           asteroid.setzePosition(Math.random() * 501,500,0);
+           asteroid.setzePosition(Math.random() * 801,700,0);
 
         }
     }
 
+    public void asteroidZuruecksetzen(){
+
+        asteroid.setzePosition(Math.random() * 501,700,0);
+
+    }
     public double gibX(){
       return asteroid.gibX();
 
