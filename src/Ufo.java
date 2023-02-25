@@ -34,8 +34,13 @@ public class Ufo {
         return ufo.gibY();
     }
 
+    public void explosion(){
+      ufo.setzeTextur("src/img/Explosion für Ufo.png");
+    }
+
     public void ufoZuruecksetzen(){
        ufo.setzePosition(500,-200,0) ;
-
+        ufo.setzeTextur("src/img/Rocket Bild.png");
     }
+
 }

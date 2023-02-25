@@ -6,7 +6,7 @@ public class Asteroid {
     public Asteroid(double Radius) {
         asteroid = new GLKugel(Math.random() * 1201, 700+Math.random() * 2001, 0, Radius);
         asteroid.setzeTextur("src/img/Krater.jpg");
-
+        asteroid.setzeSkalierung(Math.random()*1.1+0.4,Math.random()*1.1+0.4,Math.random()*1.1+0.4);
         speedRadius = Radius;
     }
 
@@ -35,6 +35,20 @@ public class Asteroid {
     }
 
     public double radiusHitbox(){
-        return speedRadius*0.9;
+        return speedRadius*0.95;
+    }
+
+    public void level1 () {
+        asteroid.setzeTextur("src/img/Krater.jpg");
+    }
+    public void level2 () {
+        asteroid.setzeTextur("src/img/img.png");
+    }
+
+    public void level3 (){
+        asteroid.setzeTextur("src/img/Krater.jpg");
+    }
+    public void level4 (){
+        asteroid.setzeTextur("src/img/img_1.png");
     }
 }
