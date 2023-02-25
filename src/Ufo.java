@@ -5,7 +5,7 @@ public class Ufo {
 
     public Ufo() {
 
-        ufo = new GLQuader(500, 0, 0, 20, 40, 5);
+        ufo = new GLQuader(600, 0, 0, 20, 40, 0.5);
         ufo.setzeTextur("src/img/Rocket Bild.png");
         ufo.drehe(0,0,180);
     }
