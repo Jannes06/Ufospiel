@@ -115,7 +115,7 @@ public class Ufospiel {
             }
         }
         //Level 2
-        if (milisek == 500) {
+        if (milisek == 4000) {
             hintergrund.setzeTextur("src/img/8k Sterne2.jpg");
 
             rundenNR = rundenNR + 1;
@@ -127,7 +127,7 @@ public class Ufospiel {
         }
 
         //Level 3
-        if (milisek == 1000) {
+        if (milisek == 8000) {
             hintergrund.setzeTextur("src/img/8kSterne3.jpg");
             rundenNR = rundenNR + 1;
             dasUfo.ufoZuruecksetzen();
@@ -137,7 +137,7 @@ public class Ufospiel {
             }
         }
          // Level 4
-        if (milisek == 1500) {
+        if (milisek == 12000) {
             hintergrund.setzeTextur("src/img/8k Sterne4.jpg");
             rundenNR = rundenNR + 1;
             dasUfo.ufoZuruecksetzen();
