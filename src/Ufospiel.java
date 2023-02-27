@@ -10,23 +10,26 @@ public class Ufospiel {
     private GLTafel testTafel;
     double asteroidPX;
     double asteroidPY;
+    double asteroidPZ;
     double ufoPX;
     double ufoPY;
+    double ufoPZ;
     double milisek = 0;
     int rundenNR = 1;
 
-    int asteroidenAnzahl = 82;
+    int asteroidenAnzahl = 400;
     private Asteroid[] asteroiden;
 
     public Ufospiel() {
         kamera = new GLSchwenkkamera();
-        kamera.verschiebe(600, 0, 500);
+        kamera.verschiebe(600, 40, 0);
+
         licht = new GLLicht();
         tastatur = new GLTastatur();
         himmel = new GLHimmel("src/img/8k Sterne2.jpg");
 
 
-        hintergrund = new GLQuader(600, 35, -800, 4000, 2000, 1);
+        hintergrund = new GLQuader(600, 0, -2000, 8000, 4000, 1);
        // hintergrund.setzeTextur("src/img/Sterne.jpg");
 
         dasUfo = new Ufo();
@@ -115,7 +118,7 @@ public class Ufospiel {
             }
         }
         //Level 2
-        if (milisek == 4000) {
+        if (milisek == 10000) {
             hintergrund.setzeTextur("src/img/8k Sterne2.jpg");
 
             rundenNR = rundenNR + 1;
@@ -127,7 +130,7 @@ public class Ufospiel {
         }
 
         //Level 3
-        if (milisek == 8000) {
+        if (milisek == 20000) {
             hintergrund.setzeTextur("src/img/8kSterne3.jpg");
             rundenNR = rundenNR + 1;
             dasUfo.ufoZuruecksetzen();
@@ -137,7 +140,7 @@ public class Ufospiel {
             }
         }
          // Level 4
-        if (milisek == 12000) {
+        if (milisek == 30000) {
             hintergrund.setzeTextur("src/img/8k Sterne4.jpg");
             rundenNR = rundenNR + 1;
             dasUfo.ufoZuruecksetzen();
@@ -157,18 +160,20 @@ public class Ufospiel {
 
             ufoPX = dasUfo.gibX();
             ufoPY = dasUfo.gibY();
+            ufoPZ = dasUfo.gibZ();
             asteroidPX = asteroiden[i].gibX();
             asteroidPY = asteroiden[i].gibY();
+            asteroidPZ = asteroiden[i].gibZ();
             double individuelleHitbox = asteroiden[i].radiusHitbox();
             //Hier wird gecheckt, ob das Ufo ein Asteroiden berührt.
-            if (((ufoPX < asteroidPX + individuelleHitbox) & (ufoPX > asteroidPX - individuelleHitbox)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox))) {
+            if (((ufoPX < asteroidPX + individuelleHitbox) & (ufoPX > asteroidPX - individuelleHitbox)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox))& ((ufoPZ < asteroidPZ + individuelleHitbox) & (ufoPZ > asteroidPZ - individuelleHitbox))) {
                 testTafel.setzeFarbe(1, 0, 0);
                 dasUfo.explosion();
                 Sys.warte(3000);
                 testTafel.setzeFarbe(1, 1, 1);
 
                 milisek= 0;
-                Sys.warte(2000);
+               // Sys.warte(2000);
             }
 
         }
