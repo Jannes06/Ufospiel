@@ -4,7 +4,7 @@ public class Asteroid {
     double speedRadius; //Damit man die Geschwindigkeit auf den Radius anpassen kann, und die Hitbox angegeben werden kann.
 
     public Asteroid(double Radius) {
-        asteroid = new GLKugel(Math.random() * 1201, -500+Math.random() * 1001, -1700+Math.random() * 600, Radius);
+        asteroid = new GLKugel(Math.random() * 1001, -500+Math.random() * 801, -1700+Math.random() * 600, Radius);
         asteroid.setzeTextur("src/img/Krater.jpg");
         asteroid.setzeSkalierung(Math.random()*1.1+0.4,Math.random()*1.1+0.4,Math.random()*1.1+0.4);
         speedRadius = Radius;
@@ -14,7 +14,7 @@ public class Asteroid {
         asteroid.verschiebe(0, 0, +20/speedRadius);
         asteroid.drehe(10/speedRadius,10/speedRadius,10/speedRadius);
         if (asteroid.gibZ() > 600) {
-           asteroid.setzePosition(Math.random() * 1201,-500+Math.random() * 1001,-1700+Math.random() * 600);
+           asteroid.setzePosition(Math.random() * 1001,-500+Math.random() * 801,-1700+Math.random() * 600);
 
         }
     }
