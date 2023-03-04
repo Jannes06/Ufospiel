@@ -63,7 +63,7 @@ public class Ufospiel {
             backsetzer = 1;
         }
         //GegenbewegungLinksRand
-        if (dasUfo.gibX() < 0) {
+        if (dasUfo.gibX() < 100) {
             dasUfo.bewegeRechts();
         }
         //Bewegung nach rechts
@@ -72,31 +72,33 @@ public class Ufospiel {
             backsetzer = 1;
         }
 
-        if ((!tastatur.rechts()) && (!tastatur.links())) {
-             backsetzer= 0;
 
-        }
         //GegenbewegungRechtsRand
-        if (dasUfo.gibX() > 1000) {
+        if (dasUfo.gibX() > 900) {
             dasUfo.bewegeLinks();
         }
         //Bewegung nach oben
         if (tastatur.oben()) {
             dasUfo.bewegeOben();
+            backsetzer= 1;
         }
         //GegenbewegungObenRand
-        if (dasUfo.gibY() > 400) {
+        if (dasUfo.gibY() > 350) {
             dasUfo.bewegeUnten();
         }
         //Bewegung nach unten
         if (tastatur.unten()) {
             dasUfo.bewegeUnten();
+            backsetzer = 1;
         }
         //GegenbewegungUntenRand
-        if (dasUfo.gibY() < -400) {
+        if (dasUfo.gibY() < -350) {
             dasUfo.bewegeOben();
         }
+        if ((!tastatur.rechts()) && (!tastatur.links())&&(!tastatur.oben())&&(!tastatur.unten())) {
+            backsetzer= 0;
 
+        }
         if (backsetzer==0 ) {
          dasUfo.DrehungZuruecksetzen();
         }
