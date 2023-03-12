@@ -21,7 +21,7 @@ public class Asteroid {
 
     public void asteroidZuruecksetzen(){
 
-        asteroid.setzePosition(Math.random() * 1201,-500+Math.random() * 1001,-1700+Math.random() * 600);
+        asteroid.setzePosition(Math.random() * 1001,-500+Math.random() * 801,-1700+Math.random() * 600);
 
     }
     public double gibX(){
@@ -36,7 +36,7 @@ public class Asteroid {
     }
 
     public double radiusHitbox(){
-        return speedRadius*0.95;
+        return speedRadius*0.90;
     }
 
     public void level1 () {

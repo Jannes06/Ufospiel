@@ -7,9 +7,9 @@ public class Ufo {
 
     public Ufo() {
 
-        ufo = new Model(0,0,0,0,0,0,new File("src/m-falcon.stl"));
-        ufo.skaliere(0.4,0.4,0.4);
-        ufo.setzeFarbe(1,1,1);
+        ufo = new Model(0,0,0,0,0,0,new File("src/t-fighter (1).stl"));
+        ufo.skaliere(0.01,0.01,0.01);
+        ufo.setzeFarbe(1,0,0);
         ufo.drehe(0,0,0);
     }
 
