@@ -38,7 +38,7 @@ public class Ufospiel {
 
         asteroiden = new Asteroid[asteroidenAnzahl];
         for (int i = 0; i < asteroidenAnzahl; i++) {
-            asteroiden[i] = new Asteroid(Math.random() * 30 + 10);
+            asteroiden[i] = new Asteroid(dasUfo,Math.random() * 30 + 10);
         }
 
         while (0 == 0) {
@@ -164,25 +164,15 @@ public class Ufospiel {
     }
     public void crash() {
         for (int i = 0; i < asteroidenAnzahl; i++) {
+          if (asteroiden[i].crash() == true) {
 
-            ufoPX = dasUfo.gibX();
-            ufoPY = dasUfo.gibY();
-            ufoPZ = dasUfo.gibZ();
-            asteroidPX = asteroiden[i].gibX();
-            asteroidPY = asteroiden[i].gibY();
-            asteroidPZ = asteroiden[i].gibZ();
-            double individuelleHitbox = asteroiden[i].radiusHitbox();
-            //Hier wird gecheckt, ob das Ufo ein Asteroiden berührt.
-            if (((ufoPX < asteroidPX + individuelleHitbox) & (ufoPX > asteroidPX - individuelleHitbox)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox))& ((ufoPZ < asteroidPZ + individuelleHitbox) & (ufoPZ > asteroidPZ - individuelleHitbox))) {
-                testTafel.setzeFarbe(1, 0, 0);
-                dasUfo.explosion();
-                Sys.warte(100);
-                testTafel.setzeFarbe(1, 1, 1);
-                for (int e = 0; e < asteroidenAnzahl; e++)
-                    asteroiden[e].asteroidZuruecksetzen();
-                dasUfo.ufoZuruecksetzen();
-                milisek= 0;
-               
+              dasUfo.explosion();
+              Sys.warte(100);
+              for (int e = 0; e < asteroidenAnzahl; e++)
+                  asteroiden[e].asteroidZuruecksetzen();
+              dasUfo.ufoZuruecksetzen();
+              milisek = 0;
+
             }
 
         }
@@ -196,6 +186,10 @@ public class Ufospiel {
         }
     }
     public void kameraFolge(){
+
+        ufoPX = dasUfo.gibX();
+        ufoPY = dasUfo.gibY();
+        ufoPZ = dasUfo.gibZ();
         kamera.setzePosition(ufoPX,ufoPY+10,ufoPZ+40);
      kamera.setzeBlickpunkt(ufoPX,ufoPY,-2000)   ;
 

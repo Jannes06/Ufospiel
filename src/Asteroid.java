@@ -1,13 +1,23 @@
 import GLOOP.*;
 public class Asteroid {
     GLKugel asteroid;
+    private Ufo dasUfo;
     double speedRadius; //Damit man die Geschwindigkeit auf den Radius anpassen kann, und die Hitbox angegeben werden kann.
 
-    public Asteroid(double Radius) {
+    double asteroidPX;
+    double asteroidPY;
+    double asteroidPZ;
+    double ufoPX;
+    double ufoPY;
+    double ufoPZ;
+
+
+    public Asteroid(Ufo pUfo,double Radius) {
         asteroid = new GLKugel(Math.random() * 1001, -500+Math.random() * 801, -1700+Math.random() * 600, Radius);
         asteroid.setzeTextur("src/img/Krater.jpg");
         asteroid.setzeSkalierung(Math.random()*1.1+0.4,Math.random()*1.1+0.4,Math.random()*1.1+0.4);
         speedRadius = Radius;
+        dasUfo = pUfo;
     }
 
     public void fallen() {
@@ -35,8 +45,27 @@ public class Asteroid {
         return asteroid.gibZ();
     }
 
-    public double radiusHitbox(){
-        return speedRadius*0.90;
+    //public double radiusHitbox(){
+      //  return speedRadius*0.90;
+    //}
+
+    public boolean crash() {
+
+            ufoPX = dasUfo.gibX();
+            ufoPY = dasUfo.gibY();
+            ufoPZ = dasUfo.gibZ();
+            asteroidPX = asteroid.gibX();
+            asteroidPY = asteroid.gibY();
+            asteroidPZ = asteroid.gibZ();
+            double individuelleHitbox = speedRadius;
+            //Hier wird gecheckt, ob das Ufo ein Asteroiden berührt.
+            if (((ufoPX < asteroidPX + individuelleHitbox) & (ufoPX > asteroidPX - individuelleHitbox)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox))& ((ufoPZ < asteroidPZ + individuelleHitbox) & (ufoPZ > asteroidPZ - individuelleHitbox))) {
+                return true;
+
+        }
+            else {
+                return false;
+            }
     }
 
     public void level1 () {
