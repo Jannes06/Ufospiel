@@ -7,34 +7,36 @@ public class Ufo {
 
     public Ufo() {
 
-        ufo = new Model(0,0,0,0,0,0,new File("src/t-fighter (1).stl"));
-        ufo.skaliere(0.01,0.01,0.01);
-        ufo.setzeFarbe(1,0,0);
-        ufo.drehe(0,0,0);
+        ufo = new Model(0, 0, 0, 0, 0, 0, new File("src/t-fighter (1).stl"));
+        ufo.skaliere(0.01, 0.01, 0.01);
+        ufo.setzeFarbe(1, 0, 0);
+        ufo.drehe(0, 0, 0);
     }
 
     public void bewegeLinks() {
         ufo.verschiebe(-1, 0, 0);
-        ufo.setzeDrehung(0,0,15);
+        ufo.setzeDrehung(0, 0, 15);
 
-    }public void DrehungZuruecksetzen(){
-        ufo.setzeDrehung(0,0,0);
+    }
+
+    public void DrehungZuruecksetzen() {
+        ufo.setzeDrehung(0, 0, 0);
     }
 
     public void bewegeRechts() {
         ufo.verschiebe(1, 0, 0);
-        ufo.setzeDrehung(0,0,-15);
+        ufo.setzeDrehung(0, 0, -15);
 
     }
 
     public void bewegeOben() {
         ufo.verschiebe(0, 1, 0);
-        ufo.setzeDrehung(10,0,0);
+        ufo.setzeDrehung(10, 0, 0);
     }
 
     public void bewegeUnten() {
         ufo.verschiebe(0, -1, 0);
-        ufo.setzeDrehung(-10,0,0);
+        ufo.setzeDrehung(-10, 0, 0);
     }
 
     public double gibX() {
@@ -44,19 +46,20 @@ public class Ufo {
     public double gibY() {
         return ufo.gibY();
     }
+
     public double gibZ() {
         return ufo.gibZ();
     }
 
-    public void explosion(){
-      //ufo.setzeTextur("src/img/Explosion für Ufo.png");
-        ufo.setzeFarbe(1,0,0);
+    public void explosion() {
+        //ufo.setzeTextur("src/img/Explosion für Ufo.png");
+        ufo.setzeFarbe(1, 0, 0);
     }
 
-    public void ufoZuruecksetzen(){
-       ufo.setzePosition(500,-200,0) ;
-       // ufo.setzeTextur("src/img/Rocket Bild.png");
-       ufo.setzeFarbe(1,1,1);
+    public void ufoZuruecksetzen() {
+        ufo.setzePosition(500, -200, 0);
+        // ufo.setzeTextur("src/img/Rocket Bild.png");
+        ufo.setzeFarbe(1, 1, 1);
     }
 
 }

@@ -7,6 +7,9 @@ public class Ufospiel {
     //private GLHimmel himmel;
     private GLQuader hintergrund;
     private Ufo dasUfo;
+    private Asteroid[] asteroiden;
+
+    private Coin [] coin;
     private GLTafel testTafel;
     double asteroidPX;
     double asteroidPY;
@@ -19,7 +22,8 @@ public class Ufospiel {
     int backsetzer  =0;
 
     int asteroidenAnzahl = 500;
-    private Asteroid[] asteroiden;
+    int coinAnzahl  = 4;
+
 
     public Ufospiel() {
         kamera = new GLKamera();
@@ -183,6 +187,16 @@ public class Ufospiel {
             while (!tastatur.istGedrueckt('p')) {
             }
             Sys.warte(100);
+        }
+    }
+
+    public void collected() {
+        for (int i = 0; i < coinAnzahl; i++) {
+            if (coin[i].collected() == true) {
+
+
+            }
+
         }
     }
     public void kameraFolge(){
