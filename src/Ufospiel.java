@@ -23,6 +23,7 @@ public class Ufospiel {
 
     int asteroidenAnzahl = 500;
     int coinAnzahl  = 4;
+    int gesammelteCoins= 0;
 
 
     public Ufospiel() {
@@ -39,14 +40,20 @@ public class Ufospiel {
 
         dasUfo = new Ufo();
         testTafel = new GLTafel(1300, -500, 0, 50, 50);
-
+        testTafel.setzeKamerafixierung(true);
         asteroiden = new Asteroid[asteroidenAnzahl];
         for (int i = 0; i < asteroidenAnzahl; i++) {
             asteroiden[i] = new Asteroid(dasUfo,Math.random() * 30 + 10);
         }
 
+            coin = new Coin[coinAnzahl];
+            for (int i = 0; i < coinAnzahl; i++) {
+                coin[i] = new Coin(dasUfo);
+
         while (0 == 0) {
             ausfuehrung();
+        }
+
         }
     }
 
@@ -163,7 +170,7 @@ public class Ufospiel {
             }
         }
 
-        testTafel.setzeText("Level: " + rundenNR, 50);
+
 
     }
     public void crash() {
@@ -189,14 +196,25 @@ public class Ufospiel {
             Sys.warte(100);
         }
     }
+    public void coinErschaffung() {
+
+        for (int e = 0; e < coinAnzahl; e++) {
+            if (coin[e].istCoinGeloescht() == true) {
+
+                coin = new Coin[coinAnzahl];
+
+                coin[e] = new Coin(dasUfo);
+            }
+        }
+    }
 
     public void collected() {
         for (int i = 0; i < coinAnzahl; i++) {
             if (coin[i].collected() == true) {
 
-
+             gesammelteCoins= gesammelteCoins+1;
             }
-
+          testTafel.setzeText("Coins: "+gesammelteCoins,50);
         }
     }
     public void kameraFolge(){

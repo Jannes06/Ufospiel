@@ -12,6 +12,8 @@ public class Coin {
     double ufoPY;
     double ufoPZ;
 
+    boolean coinGeloescht = false;
+
     public Coin(Ufo pUfo) {
         coin = new Model(Math.random() * 1001, -500 + Math.random() * 801, 1700 + Math.random() * 600, 10, 10, 10, new File("src/coin.stl"));
         coin.skaliere(1, 1, 1);
@@ -24,16 +26,19 @@ public class Coin {
     public void coinbewegen() {
         coin.verschiebe(0, 0, 1);
         if (coin.gibZ() > 600) {
-            coin.setzePosition(100 + Math.random() * 701, -400 + Math.random() * 701, -1700 + Math.random() * 600);
+            coin.loesche();
+            coinGeloescht = true;
         }
     }
 
-    public void coinZuruecksetzen() {
+    public void loesche() {
 
-        coin.setzePosition(Math.random() * 1001, -500 + Math.random() * 801, -1700 + Math.random() * 600);
-
+        coin.loesche();
+       coinGeloescht = true;
     }
-
+    public boolean istCoinGeloescht(){
+        return coinGeloescht;
+    }
     public double gibX() {
         return coin.gibX();
     }
