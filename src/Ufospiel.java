@@ -21,9 +21,10 @@ public class Ufospiel {
     int rundenNR = 1;
     int backsetzer  =0;
 
-    int asteroidenAnzahl = 500;
-    int coinAnzahl  = 4;
+    int asteroidenAnzahl = 400;
+    int coinAnzahl  = 3;
     int gesammelteCoins= 0;
+    boolean autopilot = false;
 
 
     public Ufospiel() {
@@ -39,7 +40,7 @@ public class Ufospiel {
        // hintergrund.setzeTextur("src/img/Sterne.jpg");
 
         dasUfo = new Ufo();
-        testTafel = new GLTafel(1300, -500, 0, 50, 50);
+        testTafel = new GLTafel(670, 0, 400, 10, 10);
         testTafel.setzeKamerafixierung(true);
         asteroiden = new Asteroid[asteroidenAnzahl];
         for (int i = 0; i < asteroidenAnzahl; i++) {
@@ -49,21 +50,26 @@ public class Ufospiel {
             coin = new Coin[coinAnzahl];
             for (int i = 0; i < coinAnzahl; i++) {
                 coin[i] = new Coin(dasUfo);
+            }
 
         while (0 == 0) {
             ausfuehrung();
         }
 
         }
-    }
+
 
     public void ausfuehrung() {
         ufobewegung();
         asteroidbewegung();
+        coinbewegung();
         crash();
         pause();
         rundenanzahl();
+        collected();
+        coinErschaffung();
         kameraFolge();
+        kuenstlicheIntelligenz();
         Sys.warte();
     }
     public void ufobewegung() {
@@ -118,6 +124,12 @@ public class Ufospiel {
         for (int i = 0; i < asteroidenAnzahl; i++) {
             asteroiden[i].fallen();
         }
+    }
+    public void coinbewegung(){
+        for (int i = 0; i < coinAnzahl; i++) {
+            coin[i].coinbewegen();
+        }
+
     }
     public void asteroidKoordinatenTest() {
         for (int i = 0; i < asteroidenAnzahl; i++) {
@@ -183,6 +195,7 @@ public class Ufospiel {
                   asteroiden[e].asteroidZuruecksetzen();
               dasUfo.ufoZuruecksetzen();
               milisek = 0;
+              gesammelteCoins= 0;
 
             }
 
@@ -196,15 +209,17 @@ public class Ufospiel {
             Sys.warte(100);
         }
     }
+
     public void coinErschaffung() {
 
         for (int e = 0; e < coinAnzahl; e++) {
             if (coin[e].istCoinGeloescht() == true) {
 
-                coin = new Coin[coinAnzahl];
+                coin[e].loesche();
 
                 coin[e] = new Coin(dasUfo);
             }
+
         }
     }
 
@@ -213,8 +228,10 @@ public class Ufospiel {
             if (coin[i].collected() == true) {
 
              gesammelteCoins= gesammelteCoins+1;
+             coin[i].loesche();
+             coin[i]=new Coin(dasUfo);
             }
-          testTafel.setzeText("Coins: "+gesammelteCoins,50);
+          testTafel.setzeText("Coins: "+gesammelteCoins,10);
         }
     }
     public void kameraFolge(){
@@ -226,4 +243,30 @@ public class Ufospiel {
      kamera.setzeBlickpunkt(ufoPX,ufoPY,-2000)   ;
 
     }
+
+    public void kuenstlicheIntelligenz(){
+
+        if (tastatur.istGedrueckt('k')) {
+         autopilot = true;
+
+         Sys.warte(20);
+            if (tastatur.istGedrueckt('k')) {
+                autopilot = false;
+            }
+        }
+
+        if (autopilot == true) {
+
+            for (int i = 0; i < asteroidenAnzahl; i++) {
+                asteroiden[i].kuenstlicheIntelligenz();
+            }
+
+        }
+
+
+    }
+
+
+
+
 }

@@ -11,6 +11,7 @@ public class Asteroid {
     double ufoPX;
     double ufoPY;
     double ufoPZ;
+    boolean letzteAbbiegung = false; //false ist Rechts|| true ist links
 
 
     public Asteroid(Ufo pUfo, double Radius) {
@@ -28,6 +29,10 @@ public class Asteroid {
             asteroid.setzePosition(Math.random() * 1001, -500 + Math.random() * 801, -1700 + Math.random() * 600);
 
         }
+    }
+
+    public void loesche() {
+        asteroid.loesche();
     }
 
     public void asteroidZuruecksetzen() {
@@ -65,6 +70,31 @@ public class Asteroid {
         } else {
             return false;
         }
+    }
+
+    public void kuenstlicheIntelligenz() {
+        ufoPX = dasUfo.gibX();
+        ufoPY = dasUfo.gibY();
+        ufoPZ = dasUfo.gibZ();
+        asteroidPX = asteroid.gibX();
+        asteroidPY = asteroid.gibY();
+        asteroidPZ = asteroid.gibZ();
+        double individuelleHitbox = speedRadius * 0.95;
+        //Hier wird gecheckt, ob das Ufo ein Asteroiden berühren würde und dementsprechend zu den Seiten bewegt.
+        if (((ufoPX < asteroidPX + individuelleHitbox+10) & (ufoPX > asteroidPX - individuelleHitbox-10)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 200) & (ufoPZ > asteroidPZ))&(letzteAbbiegung==false) ) {
+                dasUfo.bewegeLinks();
+        }
+        if (ufoPX < 110) {
+         letzteAbbiegung = true;
+        }
+
+        if (((ufoPX < asteroidPX + individuelleHitbox+10) & (ufoPX > asteroidPX - individuelleHitbox-10)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 200) & (ufoPZ > asteroidPZ))&(letzteAbbiegung==true) ) {
+            dasUfo.bewegeRechts();
+        }
+        if (ufoPX > 890) {
+            letzteAbbiegung = false;
+        }
+
     }
 
     public void level1() {

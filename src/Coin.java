@@ -3,7 +3,8 @@ import GLOOP.*;
 import java.io.File;
 
 public class Coin {
-    Model coin;
+    //Model coin;
+    GLZylinder coin;
     private Ufo dasUfo;
     double coinPX;
     double coinPY;
@@ -15,7 +16,8 @@ public class Coin {
     boolean coinGeloescht = false;
 
     public Coin(Ufo pUfo) {
-        coin = new Model(Math.random() * 1001, -500 + Math.random() * 801, 1700 + Math.random() * 600, 10, 10, 10, new File("src/coin.stl"));
+        //coin = new Model(Math.random() * 1001, -500 + Math.random() * 801, 1700 + Math.random() * 600, 10, 10, 10, new File("src/coin.stl"));
+        coin= new GLZylinder (100+Math.random() * 601, -350 + Math.random() * 701, -1700 + Math.random() * 600,15,8);
         coin.skaliere(1, 1, 1);
         coin.setzeFarbe(0, 1, 0);
         coin.drehe(0, 0, 0);
@@ -26,7 +28,7 @@ public class Coin {
     public void coinbewegen() {
         coin.verschiebe(0, 0, 1);
         if (coin.gibZ() > 600) {
-            coin.loesche();
+
             coinGeloescht = true;
         }
     }
@@ -58,9 +60,9 @@ public class Coin {
         coinPX = coin.gibX();
         coinPY = coin.gibY();
         coinPZ = coin.gibZ();
-        double individuelleHitbox = 10;
+        double individuelleHitbox = 30;
         //Hier wird gecheckt, ob das Ufo ein Asteroiden berührt.
-        if (((ufoPX < coinPX + individuelleHitbox) & (ufoPX > coinPX - individuelleHitbox)) & ((ufoPY < coinPY + individuelleHitbox) & (ufoPY > coinPY - individuelleHitbox)) & ((ufoPZ < coinPZ + individuelleHitbox) & (ufoPZ > coinPZ - individuelleHitbox))) {
+        if (((ufoPX < coinPX + individuelleHitbox) & (ufoPX > coinPX - individuelleHitbox)) & ((ufoPY < coinPY + individuelleHitbox) & (ufoPY > coinPY - individuelleHitbox)) & ((ufoPZ < coinPZ + individuelleHitbox+20) & (ufoPZ > coinPZ - individuelleHitbox))) {
             return true;
         } else {
             return false;
