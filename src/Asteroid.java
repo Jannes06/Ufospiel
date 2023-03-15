@@ -84,6 +84,7 @@ public class Asteroid {
         if (((ufoPX < asteroidPX + individuelleHitbox+10) & (ufoPX > asteroidPX - individuelleHitbox-10)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 200) & (ufoPZ > asteroidPZ))&(letzteAbbiegung==false) ) {
                 dasUfo.bewegeLinks();
         }
+        //wenn das ufo schon am linken rand war, lenkt er ab jetzt nach rechts
         if (ufoPX < 110) {
          letzteAbbiegung = true;
         }
@@ -91,12 +92,15 @@ public class Asteroid {
         if (((ufoPX < asteroidPX + individuelleHitbox+10) & (ufoPX > asteroidPX - individuelleHitbox-10)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 200) & (ufoPZ > asteroidPZ))&(letzteAbbiegung==true) ) {
             dasUfo.bewegeRechts();
         }
+        //wenn das ufo schon am rechten rand war, lenkt er ab jetzt nach links
         if (ufoPX > 890) {
             letzteAbbiegung = false;
         }
 
     }
-
+   public double radius(){
+        return speedRadius;
+   }
     public void level1() {
         asteroid.setzeTextur("src/img/Krater.jpg");
     }
