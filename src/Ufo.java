@@ -18,7 +18,14 @@ public class Ufo {
         ufo.setzeDrehung(0, 0, 15);
 
     }
-
+    public void autopilotLinks(){
+        ufo.verschiebe(-0.4, 0, 0);
+        ufo.setzeDrehung(0, 0, 15);
+}
+    public void autopilotRechts(){
+        ufo.verschiebe(0.4, 0, 0);
+        ufo.setzeDrehung(0, 0, -15);
+    }
     public void DrehungZuruecksetzen() {
         ufo.setzeDrehung(0, 0, 0);
     }

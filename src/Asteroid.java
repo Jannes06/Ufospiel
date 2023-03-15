@@ -14,7 +14,7 @@ public class Asteroid {
     boolean letzteAbbiegung = false; //false ist Rechts|| true ist links
 
 
-    public Asteroid(Ufo pUfo, double Radius) {
+    public Asteroid(Ufo pUfo,Coin pCoin, double Radius) {
         asteroid = new GLKugel(Math.random() * 1001, -500 + Math.random() * 801, -1700 + Math.random() * 600, Radius);
         asteroid.setzeTextur("src/img/Krater.jpg");
         asteroid.setzeSkalierung(Math.random() * 1.1 + 0.4, Math.random() * 1.1 + 0.4, Math.random() * 1.1 + 0.4);

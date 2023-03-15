@@ -10,6 +10,7 @@ public class Ufospiel {
     private Asteroid[] asteroiden;
 
     private Coin [] coin;
+    private Coin coinNR1;
     private GLTafel testTafel;
     double asteroidPX;
     double asteroidPY;
@@ -22,7 +23,7 @@ public class Ufospiel {
     int backsetzer  =0;
 
     int asteroidenAnzahl = 400;
-    int coinAnzahl  = 3;
+    int coinAnzahl  = 0;
     int gesammelteCoins= 0;
     boolean autopilot = false;
     boolean letzteAbbiegung = false; //false ist Rechts|| true ist links
@@ -46,8 +47,10 @@ public class Ufospiel {
         testTafel.setzeKamerafixierung(true);
         asteroiden = new Asteroid[asteroidenAnzahl];
         for (int i = 0; i < asteroidenAnzahl; i++) {
-            asteroiden[i] = new Asteroid(dasUfo,Math.random() * 30 + 10);
+            asteroiden[i] = new Asteroid(dasUfo,coinNR1,Math.random() * 30 + 10);
         }
+        //coinNR1 ist unser Standart Coin, ihn gibt es immer und der autopilot kann diesen Anwisieren
+            coinNR1 = new Coin(dasUfo);
 
             coin = new Coin[coinAnzahl];
             for (int i = 0; i < coinAnzahl; i++) {
@@ -75,53 +78,73 @@ public class Ufospiel {
         Sys.warte();
     }
     public void ufobewegung() {
-
-        //Bewegung nach links
         if (tastatur.links()) {
+            linksbewegung();
+        }
+        if (tastatur.rechts()) {
+            rechtsbewegung();
+        }
+        if (tastatur.oben()) {
+            obenbewegung();
+        }
+        if (tastatur.unten()) {
+            untenbewegung();
+        }
+        drehungsZuruecksetzung();
+    }
+    public void linksbewegung() {
+        //Bewegung nach links if (tastatur.links()) {
             dasUfo.bewegeLinks();
             backsetzer = 1;
-        }
+
         //GegenbewegungLinksRand
         if (dasUfo.gibX() < 100) {
             dasUfo.bewegeRechts();
         }
+    }
+    public void rechtsbewegung() {
         //Bewegung nach rechts
-        if (tastatur.rechts()) {
+
             dasUfo.bewegeRechts();
             backsetzer = 1;
-        }
-
 
         //GegenbewegungRechtsRand
         if (dasUfo.gibX() > 900) {
             dasUfo.bewegeLinks();
         }
+    }
+    public void obenbewegung() {
         //Bewegung nach oben
-        if (tastatur.oben()) {
+
             dasUfo.bewegeOben();
-            backsetzer= 1;
-        }
+            backsetzer = 1;
+
         //GegenbewegungObenRand
         if (dasUfo.gibY() > 350) {
             dasUfo.bewegeUnten();
         }
+    }
+    public void untenbewegung() {
         //Bewegung nach unten
-        if (tastatur.unten()) {
+
             dasUfo.bewegeUnten();
             backsetzer = 1;
-        }
+
+
         //GegenbewegungUntenRand
         if (dasUfo.gibY() < -350) {
             dasUfo.bewegeOben();
         }
-        if ((!tastatur.rechts()) && (!tastatur.links())&&(!tastatur.oben())&&(!tastatur.unten())) {
-            backsetzer= 0;
-
-        }
-        if (backsetzer==0 ) {
-         dasUfo.DrehungZuruecksetzen();
-        }
     }
+       public void drehungsZuruecksetzung() {
+           if ((!tastatur.rechts()) && (!tastatur.links()) && (!tastatur.oben()) && (!tastatur.unten())) {
+               backsetzer = 0;
+
+           }
+           if (backsetzer == 0) {
+               dasUfo.DrehungZuruecksetzen();
+           }
+       }
     public void asteroidbewegung() {
         for (int i = 0; i < asteroidenAnzahl; i++) {
             asteroiden[i].fallen();
@@ -131,7 +154,7 @@ public class Ufospiel {
         for (int i = 0; i < coinAnzahl; i++) {
             coin[i].coinbewegen();
         }
-
+      coinNR1.coinbewegen();
     }
     public void asteroidKoordinatenTest() {
         for (int i = 0; i < asteroidenAnzahl; i++) {
@@ -222,6 +245,10 @@ public class Ufospiel {
                 coin[e] = new Coin(dasUfo);
             }
 
+          }
+        if (coinNR1.istCoinGeloescht()==true) {
+            coinNR1.loesche();
+            coinNR1 = new Coin (dasUfo);
         }
     }
 
@@ -259,8 +286,9 @@ public class Ufospiel {
 
         if (autopilot == true) {
             testTafel.setzeFarbe(0,1,0);
+            //Weicht den Asteroiden aus
             for (int i = 0; i < asteroidenAnzahl; i++) {
-              //  asteroiden[i].kuenstlicheIntelligenz();
+
                     hitradius = asteroiden[i].radius();
                     ufoPX = dasUfo.gibX();
                     ufoPY = dasUfo.gibY();
@@ -270,57 +298,65 @@ public class Ufospiel {
                     asteroidPZ = asteroiden[i].gibZ();
                     double individuelleHitbox = hitradius * 0.95;
                     //Hier wird gecheckt, ob das Ufo einen Asteroiden berühren würde und dementsprechend zu den Seiten bewegt.
-                    if (((ufoPX < asteroidPX + individuelleHitbox+10) & (ufoPX > asteroidPX - individuelleHitbox-10)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 200) & (ufoPZ > asteroidPZ))&(letzteAbbiegung==false) ) {
-                        dasUfo.bewegeLinks();
+                    if (((ufoPX < asteroidPX + individuelleHitbox+30) & (ufoPX > asteroidPX - individuelleHitbox-30)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 400) & (ufoPZ > asteroidPZ))&(letzteAbbiegung==false) ) {
+                        dasUfo.autopilotLinks();
+
+                        //Falls sich links bereits ein anderer Asteroid befindet:
+                        for (int links = 0; links < asteroidenAnzahl; links++) {
+                            hitradius = asteroiden[links].radius();
+                            ufoPX = dasUfo.gibX();
+                            ufoPY = dasUfo.gibY();
+                            ufoPZ = dasUfo.gibZ();
+                            asteroidPX = asteroiden[links].gibX();
+                            asteroidPY = asteroiden[links].gibY();
+                            asteroidPZ = asteroiden[links].gibZ();
+                            double individuelleHitbox2 = hitradius * 0.95;
+
+                            if (((ufoPX < asteroidPX + individuelleHitbox2 + 100) & (ufoPX > asteroidPX)) & ((ufoPY < asteroidPY + individuelleHitbox2) & (ufoPY > asteroidPY - individuelleHitbox2)) & ((ufoPZ < asteroidPZ + individuelleHitbox2 + 50) & (ufoPZ > asteroidPZ - individuelleHitbox2 - 10))) {
+
+                                letzteAbbiegung = true;
+                            }
+                        }
                     }
+
                     //wenn das ufo schon am linken rand war, lenkt er ab jetzt nach rechts
                     if (ufoPX < 110) {
                         letzteAbbiegung = true;
                     }
-                    //Falls sich links bereits ein anderer Asteroid befindet
-                    for (int links = 0; links < asteroidenAnzahl; links++) {
-                        hitradius = asteroiden[links].radius();
-                        ufoPX = dasUfo.gibX();
-                        ufoPY = dasUfo.gibY();
-                        ufoPZ = dasUfo.gibZ();
-                        asteroidPX = asteroiden[links].gibX();
-                        asteroidPY = asteroiden[links].gibY();
-                        asteroidPZ = asteroiden[links].gibZ();
-                        double individuelleHitbox2 = hitradius * 0.95;
 
-                        if (((ufoPX < asteroidPX + individuelleHitbox2+100) & (ufoPX > asteroidPX )) & ((ufoPY < asteroidPY + individuelleHitbox2) & (ufoPY > asteroidPY - individuelleHitbox2)) & ((ufoPZ < asteroidPZ + individuelleHitbox2+10) & (ufoPZ > asteroidPZ-individuelleHitbox2-10)) ) {
 
-                            letzteAbbiegung = true;
-                    }
-                    if (((ufoPX < asteroidPX + individuelleHitbox+10) & (ufoPX > asteroidPX - individuelleHitbox-10)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 200) & (ufoPZ > asteroidPZ))&(letzteAbbiegung==true) ) {
-                        dasUfo.bewegeRechts();
+                    if (((ufoPX < asteroidPX + individuelleHitbox+30) & (ufoPX > asteroidPX - individuelleHitbox-30)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 400) & (ufoPZ > asteroidPZ))&(letzteAbbiegung==true) ) {
+                        dasUfo.autopilotRechts();
+
+                        //Falls sich rechts bereits ein anderer Asteroid befindet:
+                        for (int rechts = 0; rechts < asteroidenAnzahl; rechts++) {
+
+                            hitradius = asteroiden[rechts].radius();
+                            ufoPX = dasUfo.gibX();
+                            ufoPY = dasUfo.gibY();
+                            ufoPZ = dasUfo.gibZ();
+                            asteroidPX = asteroiden[rechts].gibX();
+                            asteroidPY = asteroiden[rechts].gibY();
+                            asteroidPZ = asteroiden[rechts].gibZ();
+                            double individuelleHitbox3 = hitradius * 0.95;
+
+                            if (((ufoPX < asteroidPX) & (ufoPX > asteroidPX - individuelleHitbox3 - 100)) & ((ufoPY < asteroidPY + individuelleHitbox3) & (ufoPY > asteroidPY - individuelleHitbox3)) & ((ufoPZ < asteroidPZ + individuelleHitbox3 + 50) & (ufoPZ > asteroidPZ - individuelleHitbox3 - 10))) {
+
+                                letzteAbbiegung = false;
+                            }
+                        }
                     }
                     //wenn das ufo schon am rechten rand war, lenkt er ab jetzt nach links
                     if (ufoPX > 890) {
                         letzteAbbiegung = false;
                     }
-                //Falls sich rechts bereits ein anderer Asteroid befindet
-                    for (int rechts = 0; rechts < asteroidenAnzahl; rechts++) {
 
-                        hitradius = asteroiden[links].radius();
-                        ufoPX = dasUfo.gibX();
-                        ufoPY = dasUfo.gibY();
-                        ufoPZ = dasUfo.gibZ();
-                        asteroidPX = asteroiden[links].gibX();
-                        asteroidPY = asteroiden[links].gibY();
-                        asteroidPZ = asteroiden[links].gibZ();
-                        double individuelleHitbox3 = hitradius * 0.95;
 
-                        if (((ufoPX < asteroidPX ) & (ufoPX > asteroidPX- individuelleHitbox3 - 100)) & ((ufoPY < asteroidPY + individuelleHitbox3) & (ufoPY > asteroidPY - individuelleHitbox3)) & ((ufoPZ < asteroidPZ + individuelleHitbox3 + 10) & (ufoPZ > asteroidPZ - individuelleHitbox3 - 10))) {
 
-                            letzteAbbiegung = false;
-                        }
 
-                    }
                 }
                 }
-                }
-
+            //Verfolgt die Punkte
 
 
         if (autopilot == false) {
