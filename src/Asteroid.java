@@ -15,7 +15,7 @@ public class Asteroid {
 
 
     public Asteroid(Ufo pUfo,Coin pCoin, double Radius) {
-        asteroid = new GLKugel(Math.random() * 1001, -500 + Math.random() * 801, -1700 + Math.random() * 600, Radius);
+        asteroid = new GLKugel(Math.random() * 1001, -500 + Math.random() * 901, -1700 + Math.random() * 600, Radius);
         asteroid.setzeTextur("src/img/Krater.jpg");
         asteroid.setzeSkalierung(Math.random() * 1.1 + 0.4, Math.random() * 1.1 + 0.4, Math.random() * 1.1 + 0.4);
         speedRadius = Radius;
@@ -37,7 +37,7 @@ public class Asteroid {
 
     public void asteroidZuruecksetzen() {
 
-        asteroid.setzePosition(Math.random() * 1001, -500 + Math.random() * 801, -1700 + Math.random() * 600);
+        asteroid.setzePosition(Math.random() * 1001, -500 + Math.random() * 901, -1700 + Math.random() * 600);
 
     }
 

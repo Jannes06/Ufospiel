@@ -19,12 +19,20 @@ public class Ufo {
 
     }
     public void autopilotLinks(){
-        ufo.verschiebe(-0.4, 0, 0);
+        ufo.verschiebe(-0.35, 0, 0);
         ufo.setzeDrehung(0, 0, 15);
 }
     public void autopilotRechts(){
-        ufo.verschiebe(0.4, 0, 0);
+        ufo.verschiebe(0.35, 0, 0);
         ufo.setzeDrehung(0, 0, -15);
+    }
+    public void autopilotOben() {
+        ufo.verschiebe(0, 0.7, 0);
+        ufo.setzeDrehung(10, 0, -15);
+    }
+    public void autopilotUnten() {
+        ufo.verschiebe(0, -0.7, 0);
+        ufo.setzeDrehung(-10, 0, -15);
     }
     public void DrehungZuruecksetzen() {
         ufo.setzeDrehung(0, 0, 0);
@@ -64,7 +72,7 @@ public class Ufo {
     }
 
     public void ufoZuruecksetzen() {
-        ufo.setzePosition(500, -200, 0);
+        ufo.setzePosition(500, 0, 0);
         // ufo.setzeTextur("src/img/Rocket Bild.png");
         ufo.setzeFarbe(1, 1, 1);
     }
