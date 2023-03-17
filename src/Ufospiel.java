@@ -5,13 +5,13 @@ public class Ufospiel {
     private GLLicht licht;
     private GLTastatur tastatur;
     //private GLHimmel himmel;
-    private GLQuader hintergrund;
+
     private Ufo dasUfo;
     private Asteroid[] asteroiden;
 
     private Coin[] coin;
     private Coin coinNR1;
-    private GLTafel coinAnzeige, levelAnzeige;
+    private GLTafel coinAnzeige, levelAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
     double asteroidPX;
     double asteroidPY;
     double asteroidPZ;
@@ -39,8 +39,19 @@ public class Ufospiel {
         //himmel = new GLHimmel("src/img/8k Sterne2.jpg");
 
 
-        hintergrund = new GLQuader(600, 0, -2000, 8000, 4000, 1);
-        // hintergrund.setzeTextur("src/img/Sterne.jpg");
+
+
+        hintergrund1 = new GLTafel(600, 0, -2001, 8000, 4000);
+        hintergrund1.setzeTextur("src/img/Sterne.jpg");
+
+        hintergrund2 = new GLTafel(600, 0, -2002, 8000, 4000);
+        hintergrund2.setzeTextur("src/img/8k Sterne2.jpg");
+
+        hintergrund3 = new GLTafel(600, 0, -2003, 8000, 4000);
+        hintergrund3.setzeTextur("src/img/8kSterne3.jpg");
+
+        hintergrund4 = new GLTafel(600, 0, -2004, 8000, 4000);
+        hintergrund4.setzeTextur("src/img/8k Sterne4.jpg");
 
         dasUfo = new Ufo();
 
@@ -176,7 +187,10 @@ public class Ufospiel {
         //Level 1
 
         if (milisek == 1) {
-            hintergrund.setzeTextur("src/img/Sterne.jpg");
+            hintergrund1.setzeSichtbarkeit(true);
+            hintergrund2.setzeSichtbarkeit(false);
+            hintergrund3.setzeSichtbarkeit(false);
+            hintergrund4.setzeSichtbarkeit(false);
             rundenNR = 1;
             dasUfo.ufoZuruecksetzen();
             for (int i = 0; i < asteroidenAnzahl; i++) {
@@ -186,7 +200,10 @@ public class Ufospiel {
         }
         //Level 2
         if (milisek == 10000) {
-            hintergrund.setzeTextur("src/img/8k Sterne2.jpg");
+            hintergrund1.setzeSichtbarkeit(false);
+            hintergrund2.setzeSichtbarkeit(true);
+            hintergrund3.setzeSichtbarkeit(false);
+            hintergrund4.setzeSichtbarkeit(false);
             rundenNR = rundenNR + 1;
             dasUfo.ufoZuruecksetzen();
             for (int i = 0; i < asteroidenAnzahl; i++) {
@@ -197,7 +214,10 @@ public class Ufospiel {
 
         //Level 3
         if (milisek == 20000) {
-            hintergrund.setzeTextur("src/img/8kSterne3.jpg");
+            hintergrund1.setzeSichtbarkeit(false);
+            hintergrund2.setzeSichtbarkeit(false);
+            hintergrund3.setzeSichtbarkeit(true);
+            hintergrund4.setzeSichtbarkeit(false);
             rundenNR = rundenNR + 1;
             dasUfo.ufoZuruecksetzen();
             for (int e = 0; e < asteroidenAnzahl; e++) {
@@ -207,7 +227,10 @@ public class Ufospiel {
         }
         // Level 4
         if (milisek == 30000) {
-            hintergrund.setzeTextur("src/img/8k Sterne4.jpg");
+            hintergrund1.setzeSichtbarkeit(false);
+            hintergrund2.setzeSichtbarkeit(false);
+            hintergrund3.setzeSichtbarkeit(false);
+            hintergrund4.setzeSichtbarkeit(true);
 
 
         }
