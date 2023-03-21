@@ -11,7 +11,7 @@ public class Ufospiel {
 
     private Coin[] coin;
     private Coin coinNR1;
-    private GLTafel coinAnzeige, levelAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
+    private GLTafel coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
     double asteroidPX;
     double asteroidPY;
     double asteroidPZ;
@@ -23,7 +23,7 @@ public class Ufospiel {
     int backsetzer = 0;
 
     int asteroidenAnzahl = 400;
-    int coinAnzahl = 0;
+    int coinAnzahl = 4;
     int gesammelteCoins = 0;
     boolean autopilot = false;
     boolean letzteAbbiegung = false; //false ist Rechts|| true ist links
@@ -55,12 +55,19 @@ public class Ufospiel {
 
         dasUfo = new Ufo();
 
-        coinAnzeige = new GLTafel(670, 0, 400, 10, 10);
-        coinAnzeige.setzeTextur("src/img/img_2.png");
+        coinAnzeige = new GLTafel(670, 0, 400, 30, 30);
+        coinAnzeige.setzeTextur("src/img/Coin.png");
         coinAnzeige.setzeKamerafixierung(true);
 
         levelAnzeige = new GLTafel(670, 10, 400, 10, 10);
         levelAnzeige.setzeKamerafixierung(true);
+
+        levelUpAnzeige = new GLTafel(600, 0, -100, 400, 400);
+        levelUpAnzeige.setzeTextur("src/img/LevelUpAnzeige.png");
+        levelUpAnzeige.drehe(0,0,180);
+        levelUpAnzeige.setzeKamerafixierung(true);
+        levelUpAnzeige.setzeSichtbarkeit(false);
+
 
         asteroiden = new Asteroid[asteroidenAnzahl];
         for (int i = 0; i < asteroidenAnzahl; i++) {
@@ -187,6 +194,8 @@ public class Ufospiel {
         //Level 1
 
         if (milisek == 1) {
+
+
             hintergrund1.setzeSichtbarkeit(true);
             hintergrund2.setzeSichtbarkeit(false);
             hintergrund3.setzeSichtbarkeit(false);
@@ -197,9 +206,11 @@ public class Ufospiel {
                 asteroiden[i].asteroidZuruecksetzen();
                 asteroiden[i].level1();
             }
+
         }
         //Level 2
         if (milisek == 10000) {
+
             hintergrund1.setzeSichtbarkeit(false);
             hintergrund2.setzeSichtbarkeit(true);
             hintergrund3.setzeSichtbarkeit(false);
@@ -210,10 +221,13 @@ public class Ufospiel {
                 asteroiden[i].asteroidZuruecksetzen();
                 asteroiden[i].level2();
             }
+            levelUpAnzeige.setzeSichtbarkeit(true);
+            Sys.warte(300);
         }
 
         //Level 3
         if (milisek == 20000) {
+
             hintergrund1.setzeSichtbarkeit(false);
             hintergrund2.setzeSichtbarkeit(false);
             hintergrund3.setzeSichtbarkeit(true);
@@ -223,10 +237,14 @@ public class Ufospiel {
             for (int e = 0; e < asteroidenAnzahl; e++) {
                 asteroiden[e].asteroidZuruecksetzen();
                 asteroiden[e].level3();
+
             }
+            levelUpAnzeige.setzeSichtbarkeit(true);
+            Sys.warte(300);
         }
         // Level 4
         if (milisek == 30000) {
+
             hintergrund1.setzeSichtbarkeit(false);
             hintergrund2.setzeSichtbarkeit(false);
             hintergrund3.setzeSichtbarkeit(false);
@@ -235,6 +253,7 @@ public class Ufospiel {
 
         }
         if (milisek%30000==0) {
+
             rundenNR = rundenNR + 1;
             dasUfo.ufoZuruecksetzen();
             for (int l = 0; l < asteroidenAnzahl; l++) {
@@ -242,8 +261,12 @@ public class Ufospiel {
                 asteroiden[l].level4();
 
             }
+            levelUpAnzeige.setzeSichtbarkeit(true);
+            Sys.warte(300);
         }
-        levelAnzeige.setzeText("Level: " +rundenNR,10 );
+        levelAnzeige.setzeText("" +rundenNR,10 );
+        levelUpAnzeige.setzeSichtbarkeit(false);
+
     }
 
     public void crash() {
@@ -305,7 +328,7 @@ public class Ufospiel {
             coinNR1.loesche();
             coinNR1 = new Coin(dasUfo);
         }
-        coinAnzeige.setzeText("Coins: " + gesammelteCoins, 10);
+        coinAnzeige.setzeText( ""+gesammelteCoins, 10);
     }
 
     public void kameraFolge() {
