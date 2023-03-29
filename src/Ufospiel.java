@@ -11,7 +11,7 @@ public class Ufospiel {
 
     private Coin[] coin;
     private Coin coinNR1;
-    private GLTafel coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
+    private GLTafel fuelAnzeige,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
     double asteroidPX;
     double asteroidPY;
     double asteroidPZ;
@@ -23,11 +23,12 @@ public class Ufospiel {
     int backsetzer = 0;
 
     int asteroidenAnzahl = 400;
-    int coinAnzahl = 4;
+    int coinAnzahl = 0;
     int gesammelteCoins = 0;
     boolean autopilot = false;
     boolean letzteAbbiegung = false; //false ist Rechts|| true ist links
     double hitradius;
+    int levelUpAnzeigeDauer = 500;
 
 
     public Ufospiel() {
@@ -55,25 +56,44 @@ public class Ufospiel {
 
         dasUfo = new Ufo();
 
-        coinAnzeige = new GLTafel(670, 0, 400, 30, 30);
+       //Die Widgets bzw Anzeigen-------------------------------------------------------------------------------------------
+        coinAnzeige = new GLTafel(640, -5, 401, 15, 15);
         coinAnzeige.setzeTextur("src/img/Coin.png");
         coinAnzeige.setzeKamerafixierung(true);
 
-        levelAnzeige = new GLTafel(670, 10, 400, 10, 10);
+        fuelAnzeige = new GLTafel(670, -5, 401, 15, 15);
+        fuelAnzeige.drehe(0,0,180);
+        fuelAnzeige.drehe(0,180,0);
+        fuelAnzeige.setzeTextur("src/img/fuelTank.png");
+        fuelAnzeige.setzeKamerafixierung(true);
+
+        levelAnzeige = new GLTafel(600, -5, 401, 10, 10);
+        levelAnzeige.setzeTextur("src/img/LeisteRahmen.png");
         levelAnzeige.setzeKamerafixierung(true);
 
-        levelUpAnzeige = new GLTafel(600, 0, -100, 400, 400);
+
+        //Stellt den Hintergund fü die anderen Widgets dar---------------------
+        sidebar = new GLTafel(600, -5, 400, 180, 15);
+        sidebar.setzeTextur("src/img/Leiste.png");
+        sidebar.setzeKamerafixierung(true);
+
+        sidebarRahmen = new GLTafel(600, -5, 399, 190, 17);
+        sidebarRahmen.setzeTextur("src/img/LeisteRahmen.png");
+        sidebarRahmen.setzeKamerafixierung(true);
+
+        //erscheint bei dem Erreichen der nächsten Runde----------------------------------------------------------------------
+        levelUpAnzeige = new GLTafel(600, -5, 402, 20, 20);
         levelUpAnzeige.setzeTextur("src/img/LevelUpAnzeige.png");
         levelUpAnzeige.drehe(0,0,180);
         levelUpAnzeige.setzeKamerafixierung(true);
         levelUpAnzeige.setzeSichtbarkeit(false);
 
-
         asteroiden = new Asteroid[asteroidenAnzahl];
         for (int i = 0; i < asteroidenAnzahl; i++) {
             asteroiden[i] = new Asteroid(dasUfo, coinNR1, Math.random() * 30 + 10);
         }
-        //coinNR1 ist unser Standart Coin, ihn gibt es immer und der autopilot kann diesen Anwisieren
+
+        //coinNR1 ist unser Standart Coin, ihn gibt es immer und der autopilot kann diesen Anvisieren
         coinNR1 = new Coin(dasUfo);
 
         coin = new Coin[coinAnzahl];
@@ -192,7 +212,7 @@ public class Ufospiel {
     public void rundenanzahl() {
         milisek = milisek + 1;
         //Level 1
-
+        levelUpAnzeigeDauer = levelUpAnzeigeDauer+1;
         if (milisek == 1) {
 
 
@@ -210,7 +230,7 @@ public class Ufospiel {
         }
         //Level 2
         if (milisek == 10000) {
-
+            levelUpAnzeigeDauer = 0;
             hintergrund1.setzeSichtbarkeit(false);
             hintergrund2.setzeSichtbarkeit(true);
             hintergrund3.setzeSichtbarkeit(false);
@@ -227,7 +247,7 @@ public class Ufospiel {
 
         //Level 3
         if (milisek == 20000) {
-
+            levelUpAnzeigeDauer = 0;
             hintergrund1.setzeSichtbarkeit(false);
             hintergrund2.setzeSichtbarkeit(false);
             hintergrund3.setzeSichtbarkeit(true);
@@ -253,7 +273,7 @@ public class Ufospiel {
 
         }
         if (milisek%30000==0) {
-
+            levelUpAnzeigeDauer = 0;
             rundenNR = rundenNR + 1;
             dasUfo.ufoZuruecksetzen();
             for (int l = 0; l < asteroidenAnzahl; l++) {
@@ -261,12 +281,22 @@ public class Ufospiel {
                 asteroiden[l].level4();
 
             }
-            levelUpAnzeige.setzeSichtbarkeit(true);
+
             Sys.warte(300);
         }
-        levelAnzeige.setzeText("" +rundenNR,10 );
-        levelUpAnzeige.setzeSichtbarkeit(false);
 
+        levelAnzeige.setzeText("Galaxy: " +rundenNR,7 );
+
+        // Aktiviert die LevelUp Tafel 400ms lang nach einem level up
+        if ( levelUpAnzeigeDauer <400 ) {
+
+            levelUpAnzeige.setzeSichtbarkeit(true);
+        }
+        // Deaktiviert die LevelUp Tafel nach den 400ms
+        if ( levelUpAnzeigeDauer >400 ) {
+
+            levelUpAnzeige.setzeSichtbarkeit(false);
+        }
     }
 
     public void crash() {
@@ -336,7 +366,7 @@ public class Ufospiel {
         ufoPX = dasUfo.gibX();
         ufoPY = dasUfo.gibY();
         ufoPZ = dasUfo.gibZ();
-        kamera.setzePosition(ufoPX, ufoPY + 10, ufoPZ + 40);
+        kamera.setzePosition(ufoPX, ufoPY +3, ufoPZ + 40);
         kamera.setzeBlickpunkt(ufoPX, ufoPY, -2000);
 
     }
