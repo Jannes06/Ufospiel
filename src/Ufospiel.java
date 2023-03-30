@@ -7,11 +7,12 @@ public class Ufospiel {
     //private GLHimmel himmel;
 
     private Ufo dasUfo;
+    FuelTank tank;
     private Asteroid[] asteroiden;
 
     private Coin[] coin;
     private Coin coinNR1;
-    private GLTafel fuelAnzeige,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
+    private GLTafel fuelAnzeige,fuelStand,fuelStandRahmen,fuelLeerText,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
     double asteroidPX;
     double asteroidPY;
     double asteroidPZ;
@@ -22,13 +23,19 @@ public class Ufospiel {
     int rundenNR = 1;
     int backsetzer = 0;
 
-    int asteroidenAnzahl = 400;
+    int asteroidenAnzahl = 100;
     int coinAnzahl = 0;
     int gesammelteCoins = 0;
     boolean autopilot = false;
     boolean letzteAbbiegung = false; //false ist Rechts|| true ist links
     double hitradius;
     int levelUpAnzeigeDauer = 500;
+    boolean auffuellen = true;
+    boolean tankleer=false;
+    double fuelZahl= 0;
+    double neueXkoordinate;
+    double neueYkoordinate;
+    double neueZkoordinate;
 
 
     public Ufospiel() {
@@ -57,15 +64,29 @@ public class Ufospiel {
         dasUfo = new Ufo();
 
        //Die Widgets bzw Anzeigen-------------------------------------------------------------------------------------------
-        coinAnzeige = new GLTafel(640, -5, 401, 15, 15);
+        coinAnzeige = new GLTafel(680, -5, 401, 15, 15);
         coinAnzeige.setzeTextur("src/img/Coin.png");
         coinAnzeige.setzeKamerafixierung(true);
 
-        fuelAnzeige = new GLTafel(670, -5, 401, 15, 15);
+        fuelAnzeige = new GLTafel(512, -5, 401, 12, 12);
         fuelAnzeige.drehe(0,0,180);
         fuelAnzeige.drehe(0,180,0);
         fuelAnzeige.setzeTextur("src/img/fuelTank.png");
         fuelAnzeige.setzeKamerafixierung(true);
+
+        fuelStandRahmen = new GLTafel(548, -5.1, 400.5, 60, 11);
+        fuelStandRahmen.setzeTextur("src/img/FuelHintergrund.jpg");
+        fuelStandRahmen.setzeKamerafixierung(true);
+
+        fuelStand = new GLTafel(548, -5.1, 401, 55, 9);
+        fuelStand.setzeFarbe(0,0.5,0);
+        fuelStand.setzeKamerafixierung(true);
+
+        fuelLeerText= new GLTafel(548, -5.1, 401, 55, 9);
+        fuelLeerText.setzeFarbe(0.5,0,0);
+        fuelLeerText.setzeText("Der Tank ist leer!",4);
+        fuelLeerText.setzeKamerafixierung(true);
+        fuelLeerText.setzeSichtbarkeit(false);
 
         levelAnzeige = new GLTafel(600, -5, 401, 10, 10);
         levelAnzeige.setzeTextur("src/img/LeisteRahmen.png");
@@ -73,11 +94,11 @@ public class Ufospiel {
 
 
         //Stellt den Hintergund fü die anderen Widgets dar---------------------
-        sidebar = new GLTafel(600, -5, 400, 180, 15);
+        sidebar = new GLTafel(600, -5, 400, 190, 15);
         sidebar.setzeTextur("src/img/Leiste.png");
         sidebar.setzeKamerafixierung(true);
 
-        sidebarRahmen = new GLTafel(600, -5, 399, 190, 17);
+        sidebarRahmen = new GLTafel(600, -5, 399, 196, 17);
         sidebarRahmen.setzeTextur("src/img/LeisteRahmen.png");
         sidebarRahmen.setzeKamerafixierung(true);
 
@@ -101,6 +122,10 @@ public class Ufospiel {
             coin[i] = new Coin(dasUfo);
         }
 
+        //Der Benzintank in der Map
+
+        tank = new FuelTank(dasUfo);
+
         while (0 == 0) {
             ausfuehrung();
         }
@@ -111,7 +136,7 @@ public class Ufospiel {
     public void ausfuehrung() {
         ufobewegung();
         asteroidbewegung();
-        coinbewegung();
+        coinUndTankbewegung();
         crash();
         pause();
         rundenanzahl();
@@ -119,30 +144,34 @@ public class Ufospiel {
         coinErschaffung();
         kameraFolge();
         autopilot();
+        tankGesammelt();
+        fuelAuffuellen();
         Sys.warte();
     }
 
     public void ufobewegung() {
-        if (tastatur.links()) {
-            linksbewegung();
+        if (tankleer==false) {
+            if (tastatur.links()) {
+                linksbewegung();
+            }
+            if (tastatur.rechts()) {
+                rechtsbewegung();
+            }
+            if (tastatur.oben()) {
+                obenbewegung();
+            }
+            if (tastatur.unten()) {
+                untenbewegung();
+            }
+            drehungsZuruecksetzung();
         }
-        if (tastatur.rechts()) {
-            rechtsbewegung();
-        }
-        if (tastatur.oben()) {
-            obenbewegung();
-        }
-        if (tastatur.unten()) {
-            untenbewegung();
-        }
-        drehungsZuruecksetzung();
     }
 
     public void linksbewegung() {
         //Bewegung nach links if (tastatur.links()) {
         dasUfo.bewegeLinks();
         backsetzer = 1;
-
+        fuelVerbrauchen();
         //GegenbewegungLinksRand
         if (dasUfo.gibX() < 100) {
             dasUfo.bewegeRechts();
@@ -154,7 +183,7 @@ public class Ufospiel {
 
         dasUfo.bewegeRechts();
         backsetzer = 1;
-
+        fuelVerbrauchen();
         //GegenbewegungRechtsRand
         if (dasUfo.gibX() > 900) {
             dasUfo.bewegeLinks();
@@ -166,7 +195,7 @@ public class Ufospiel {
 
         dasUfo.bewegeOben();
         backsetzer = 1;
-
+        fuelVerbrauchen();
         //GegenbewegungObenRand
         if (dasUfo.gibY() > 350) {
             dasUfo.bewegeUnten();
@@ -178,7 +207,7 @@ public class Ufospiel {
 
         dasUfo.bewegeUnten();
         backsetzer = 1;
-
+        fuelVerbrauchen();
 
         //GegenbewegungUntenRand
         if (dasUfo.gibY() < -350) {
@@ -202,11 +231,12 @@ public class Ufospiel {
         }
     }
 
-    public void coinbewegung() {
+    public void coinUndTankbewegung() {
         for (int i = 0; i < coinAnzahl; i++) {
             coin[i].coinbewegen();
         }
         coinNR1.coinbewegen();
+        tank.tankbewegen();
     }
 
     public void rundenanzahl() {
@@ -310,7 +340,9 @@ public class Ufospiel {
                 dasUfo.ufoZuruecksetzen();
                 milisek = 0;
                 gesammelteCoins = 0;
-
+                auffuellen=true;
+                fuelZahl=0;
+                tankleer=false;
             }
 
         }
@@ -369,6 +401,10 @@ public class Ufospiel {
         kamera.setzePosition(ufoPX, ufoPY +3, ufoPZ + 40);
         kamera.setzeBlickpunkt(ufoPX, ufoPY, -2000);
 
+       // x und y Koordinate um die fuelleiste Anzupassen
+        neueXkoordinate=kamera.gibX()-52;
+        neueYkoordinate=kamera.gibY()-45.1;
+        neueZkoordinate= kamera.gibZ()-99;
     }
 
     public void autopilot() {
@@ -509,23 +545,51 @@ public class Ufospiel {
         }
     }
 
-    public void punktverfolgung() {
-        for (int i = 0; i < asteroidenAnzahl; i++) {
+    public void tankGesammelt(){
+        if (tank.collected() == true) {
+            auffuellen=true;
+            tank.tankZuruecksetzen();
+        }
+    }
+   public void fuelAuffuellen() {
 
-            hitradius = asteroiden[i].radius();
-            ufoPX = dasUfo.gibX();
-            ufoPY = dasUfo.gibY();
-            ufoPZ = dasUfo.gibZ();
-            asteroidPX = asteroiden[i].gibX();
-            asteroidPY = asteroiden[i].gibY();
-            asteroidPZ = asteroiden[i].gibZ();
-            double individuelleHitbox = hitradius * 0.95;
-            //Hier wird gecheckt, ob das Ufo einen Asteroiden berühren würde und dementsprechend nach links bewegt.-------------------------------------------------------------------------------------------------
-            if (((ufoPX < asteroidPX + individuelleHitbox + 30) & (ufoPX > asteroidPX - individuelleHitbox - 30)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + 500) & (ufoPZ > asteroidPZ)) & (letzteAbbiegung == false)) {
+       if( auffuellen == true) {
+       fuelStand.setzeSkalierung(1,1,1);
+       fuelStand.setzeKamerafixierung(false);
+           fuelStand.setzePosition(neueXkoordinate, neueYkoordinate, neueZkoordinate);
+           fuelStand.setzeKamerafixierung(true);
+           fuelZahl=0;
+           fuelStand.setzeFarbe(0,0.5,0);
+           fuelStand.setzeSichtbarkeit(true);
+           fuelLeerText.setzeSichtbarkeit(false);
+       }
+        auffuellen=false;
+   }
+    public void fuelVerbrauchen() {
+        fuelZahl = (fuelZahl + 0.0078) * 0.99971;
 
-            }
+        fuelStand.skaliere(0.9997, 1, 1);
 
+        if (fuelZahl > 21 && fuelZahl<=26) {
+            fuelStand.setzeFarbe(0.5, 0, 0);
+        }
+        if (fuelZahl > 11 && fuelZahl <= 21) {
+            fuelStand.setzeFarbe(0.5, 0.5, 0);
+        }
+        if (fuelZahl < 11) {
+            fuelStand.setzeFarbe(0, 0.5, 0);
 
+        }
+
+        double neueXkoordinateAngepasst = neueXkoordinate - fuelZahl;
+        fuelStand.setzeKamerafixierung(false);
+        fuelStand.setzePosition(neueXkoordinateAngepasst, neueYkoordinate, neueZkoordinate);
+        fuelStand.setzeKamerafixierung(true);
+
+        if (fuelZahl > 26) {
+            fuelLeerText.setzeSichtbarkeit(true);
+            tankleer = true;
+            fuelStand.setzeSichtbarkeit(false);
         }
     }
 }

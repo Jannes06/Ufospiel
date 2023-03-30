@@ -62,7 +62,7 @@ public class Coin {
         coinPY = coin.gibY();
         coinPZ = coin.gibZ();
         double individuelleHitbox = 30;
-        //Hier wird gecheckt, ob das Ufo ein Asteroiden berührt.
+        //Hier wird gecheckt, ob das Ufo den Coin berührt.
         if (((ufoPX < coinPX + individuelleHitbox) & (ufoPX > coinPX - individuelleHitbox)) & ((ufoPY < coinPY + individuelleHitbox) & (ufoPY > coinPY - individuelleHitbox)) & ((ufoPZ < coinPZ + individuelleHitbox+20) & (ufoPZ > coinPZ - individuelleHitbox))) {
             return true;
         } else {
