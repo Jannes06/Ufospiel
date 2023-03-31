@@ -27,7 +27,7 @@ public class FuelTank {
             tank.setzePosition(100+Math.random() * 601, -350 + Math.random() * 701, -5700 + Math.random() * 600);
         }
     }
-    public void tankZuruecksetzen() {
+    public void Zuruecksetzen() {
         tank.setzePosition(100+Math.random() * 601, -350 + Math.random() * 701, -5700 + Math.random() * 600);
     }
 

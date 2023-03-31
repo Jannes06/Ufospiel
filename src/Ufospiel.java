@@ -7,12 +7,13 @@ public class Ufospiel {
     //private GLHimmel himmel;
 
     private Ufo dasUfo;
-    FuelTank tank;
+    private FuelTank tank;
+    private Schild schild;
     private Asteroid[] asteroiden;
 
     private Coin[] coin;
     private Coin coinNR1;
-    private GLTafel fuelAnzeige,fuelStand,fuelStandRahmen,fuelLeerText,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
+    private GLTafel schildanzeige,fuelAnzeige,fuelStand,fuelStandRahmen,fuelLeerText,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
     double asteroidPX;
     double asteroidPY;
     double asteroidPZ;
@@ -32,10 +33,13 @@ public class Ufospiel {
     int levelUpAnzeigeDauer = 500;
     boolean auffuellen = true;
     boolean tankleer=false;
+
     double fuelZahl= 0;
     double neueXkoordinate;
     double neueYkoordinate;
     double neueZkoordinate;
+    boolean unzerstoerbar = false;
+    int unzerstoerbarkeitsCooldown;
 
 
     public Ufospiel() {
@@ -92,6 +96,11 @@ public class Ufospiel {
         levelAnzeige.setzeTextur("src/img/LeisteRahmen.png");
         levelAnzeige.setzeKamerafixierung(true);
 
+        schildanzeige = new GLTafel(660, -5, 401, 10, 10);
+        schildanzeige.drehe(0,0,180);
+        schildanzeige.setzeTextur("src/img/Schild.png");
+        schildanzeige.setzeKamerafixierung(true);
+        schildanzeige.setzeSichtbarkeit(false);
 
         //Stellt den Hintergund fü die anderen Widgets dar---------------------
         sidebar = new GLTafel(600, -5, 400, 190, 15);
@@ -125,6 +134,7 @@ public class Ufospiel {
         //Der Benzintank in der Map
 
         tank = new FuelTank(dasUfo);
+        schild = new Schild(dasUfo);
 
         while (0 == 0) {
             ausfuehrung();
@@ -136,7 +146,7 @@ public class Ufospiel {
     public void ausfuehrung() {
         ufobewegung();
         asteroidbewegung();
-        coinUndTankbewegung();
+        coinUndTankUndSchildbewegung();
         crash();
         pause();
         rundenanzahl();
@@ -146,6 +156,7 @@ public class Ufospiel {
         autopilot();
         tankGesammelt();
         fuelAuffuellen();
+        schildGesammelt();
         Sys.warte();
     }
 
@@ -231,12 +242,13 @@ public class Ufospiel {
         }
     }
 
-    public void coinUndTankbewegung() {
+    public void coinUndTankUndSchildbewegung() {
         for (int i = 0; i < coinAnzahl; i++) {
             coin[i].coinbewegen();
         }
         coinNR1.coinbewegen();
         tank.tankbewegen();
+        schild.tankbewegen();
     }
 
     public void rundenanzahl() {
@@ -330,21 +342,23 @@ public class Ufospiel {
     }
 
     public void crash() {
-        for (int i = 0; i < asteroidenAnzahl; i++) {
-            if (asteroiden[i].crash() == true) {
+        if (unzerstoerbar == false) {
+            for (int i = 0; i < asteroidenAnzahl; i++) {
+                if (asteroiden[i].crash() == true) {
 
-                dasUfo.explosion();
-                Sys.warte(100);
-                for (int e = 0; e < asteroidenAnzahl; e++)
-                    asteroiden[e].asteroidZuruecksetzen();
-                dasUfo.ufoZuruecksetzen();
-                milisek = 0;
-                gesammelteCoins = 0;
-                auffuellen=true;
-                fuelZahl=0;
-                tankleer=false;
+                    dasUfo.explosion();
+                    Sys.warte(100);
+                    for (int e = 0; e < asteroidenAnzahl; e++)
+                        asteroiden[e].asteroidZuruecksetzen();
+                    dasUfo.ufoZuruecksetzen();
+                    milisek = 0;
+                    gesammelteCoins = 0;
+                    auffuellen = true;
+                    fuelZahl = 0;
+                    tankleer = false;
+                }
+
             }
-
         }
     }
 
@@ -548,7 +562,44 @@ public class Ufospiel {
     public void tankGesammelt(){
         if (tank.collected() == true) {
             auffuellen=true;
-            tank.tankZuruecksetzen();
+            tank.Zuruecksetzen();
+        }
+    }
+    public void schildGesammelt(){
+        if (schild.collected() == true) {
+            unzerstoerbar=true;
+            schild.Zuruecksetzen();
+        schildanzeige.setzeSichtbarkeit(true);
+        }
+        if (unzerstoerbar == true){
+             unzerstoerbarkeitsCooldown = unzerstoerbarkeitsCooldown+1;
+             //Hier blinkt die Anzeige, wenn der Schutz sich dem Ende neigt
+             if (unzerstoerbarkeitsCooldown >4400 && unzerstoerbarkeitsCooldown<4500) {
+                 schildanzeige.setzeSichtbarkeit(false);
+             }
+            if (unzerstoerbarkeitsCooldown >4500 && unzerstoerbarkeitsCooldown<4620) {
+                schildanzeige.setzeSichtbarkeit(true);
+            }
+            if (unzerstoerbarkeitsCooldown >4620 && unzerstoerbarkeitsCooldown<4700) {
+                schildanzeige.setzeSichtbarkeit(false);
+            }
+            if (unzerstoerbarkeitsCooldown >4700 && unzerstoerbarkeitsCooldown<4760) {
+                schildanzeige.setzeSichtbarkeit(true);
+            }
+            if (unzerstoerbarkeitsCooldown >4760 && unzerstoerbarkeitsCooldown<4830) {
+                schildanzeige.setzeSichtbarkeit(false);
+            }
+            if (unzerstoerbarkeitsCooldown >4830 && unzerstoerbarkeitsCooldown<4900) {
+                schildanzeige.setzeSichtbarkeit(true);
+            }
+            if (unzerstoerbarkeitsCooldown >4900 ) {
+                schildanzeige.setzeSichtbarkeit(false);
+            }
+                if (unzerstoerbarkeitsCooldown>5000)  {
+                 unzerstoerbar=false;
+                 unzerstoerbarkeitsCooldown = 0;
+
+             }
         }
     }
    public void fuelAuffuellen() {

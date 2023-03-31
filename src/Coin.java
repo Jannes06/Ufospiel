@@ -17,7 +17,7 @@ public class Coin {
 
     public Coin(Ufo pUfo) {
         //coin = new Model(Math.random() * 1001, -500 + Math.random() * 801, 1700 + Math.random() * 600, 10, 10, 10, new File("src/coin.stl"));
-        coin= new GLZylinder (100+Math.random() * 601, -350 + Math.random() * 701, -1700 + Math.random() * 600,15,2);
+        coin= new GLZylinder (100+Math.random() * 601, -350 + Math.random() * 701, -1700 + Math.random() * 600,15,3);
         coin.skaliere(1, 1, 1);
         //coin.setzeFarbe(0, 1, 0);
         coin.setzeTextur("src/img/Coin.png");
@@ -28,8 +28,8 @@ public class Coin {
 
     public void coinbewegen() {
         coin.verschiebe(0, 0, 1);
-        if (coin.gibZ() > 600) {
-
+        coin.drehe(0,0.33,0);
+        if (coin.gibZ() > 400) {
             coinGeloescht = true;
         }
     }
