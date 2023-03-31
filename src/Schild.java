@@ -13,7 +13,7 @@ public class Schild {
     double schildPY;
     double schildPZ;
     public Schild(Ufo pUfo) {
-        schild= new GLTafel (100+Math.random() * 601, -350 + Math.random() * 701, -5700 - Math.random() * 6000,30,30);
+        schild= new GLTafel (100+Math.random() * 601, -350 + Math.random() * 701, -6700 - Math.random() * 6000,30,30);
         schild.drehe(0,0,180);
         schild.drehe(0,180,0);
         schild.setzeTextur("src/img/Schild.png");
@@ -21,14 +21,14 @@ public class Schild {
 
         dasUfo = pUfo;
     }
-    public void tankbewegen() {
+    public void schildbewegen() {
         schild.verschiebe(0, 0, 1);
         if (schild.gibZ() > 600) {
-            schild.setzePosition(100+Math.random() * 601, -350 + Math.random() * 701, -10700 + Math.random() * 600);
+            schild.setzePosition(100+Math.random() * 601, -350 + Math.random() * 701, -6700 - Math.random() * 6000);
         }
     }
     public void Zuruecksetzen() {
-        schild.setzePosition(100+Math.random() * 601, -350 + Math.random() * 701, -10700 + Math.random() * 600);
+        schild.setzePosition(100+Math.random() * 601, -350 + Math.random() * 701, -8700 - Math.random() * 6000);
     }
 
     public boolean collected() {

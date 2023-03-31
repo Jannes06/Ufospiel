@@ -23,8 +23,7 @@ public class Ufospiel {
     double milisek = 0;
     int rundenNR = 1;
     int backsetzer = 0;
-
-    int asteroidenAnzahl = 100;
+    int asteroidenAnzahl = 400;
     int coinAnzahl = 0;
     int gesammelteCoins = 0;
     boolean autopilot = false;
@@ -248,7 +247,7 @@ public class Ufospiel {
         }
         coinNR1.coinbewegen();
         tank.tankbewegen();
-        schild.tankbewegen();
+        schild.schildbewegen();
     }
 
     public void rundenanzahl() {
@@ -570,9 +569,11 @@ public class Ufospiel {
             unzerstoerbar=true;
             schild.Zuruecksetzen();
         schildanzeige.setzeSichtbarkeit(true);
+
         }
         if (unzerstoerbar == true){
              unzerstoerbarkeitsCooldown = unzerstoerbarkeitsCooldown+1;
+             dasUfo.schildsichtbar();
              //Hier blinkt die Anzeige, wenn der Schutz sich dem Ende neigt
              if (unzerstoerbarkeitsCooldown >4400 && unzerstoerbarkeitsCooldown<4500) {
                  schildanzeige.setzeSichtbarkeit(false);
@@ -598,6 +599,7 @@ public class Ufospiel {
                 if (unzerstoerbarkeitsCooldown>5000)  {
                  unzerstoerbar=false;
                  unzerstoerbarkeitsCooldown = 0;
+                 dasUfo.schildunsichtbar();
 
              }
         }
