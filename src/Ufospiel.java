@@ -13,7 +13,7 @@ public class Ufospiel {
 
     private Coin[] coin;
     private Coin coinNR1;
-    private GLTafel schildanzeige,fuelAnzeige,fuelStand,fuelStandRahmen,fuelLeerText,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
+    private GLTafel energieAnzeige,energieStand,energieStandRahmen,schildanzeige,fuelAnzeige,fuelStand,fuelStandRahmen,fuelLeerText,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
     double asteroidPX;
     double asteroidPY;
     double asteroidPZ;
@@ -23,7 +23,7 @@ public class Ufospiel {
     double milisek = 0;
     int rundenNR = 1;
     int backsetzer = 0;
-    int asteroidenAnzahl = 400;
+    int asteroidenAnzahl = 10;
     int coinAnzahl = 0;
     int gesammelteCoins = 0;
     boolean autopilot = false;
@@ -39,6 +39,8 @@ public class Ufospiel {
     double neueZkoordinate;
     boolean unzerstoerbar = false;
     int unzerstoerbarkeitsCooldown;
+    double energieZahl= 0;
+    double energieSkalierung = 0.999;
 
 
     public Ufospiel() {
@@ -67,46 +69,62 @@ public class Ufospiel {
         dasUfo = new Ufo();
 
        //Die Widgets bzw Anzeigen-------------------------------------------------------------------------------------------
-        coinAnzeige = new GLTafel(680, -5, 401, 15, 15);
+        coinAnzeige = new GLTafel(692, -5, 401, 15, 15);
         coinAnzeige.setzeTextur("src/img/Coin.png");
         coinAnzeige.setzeKamerafixierung(true);
 
-        fuelAnzeige = new GLTafel(512, -5, 401, 12, 12);
+        fuelAnzeige = new GLTafel(505, -5, 401, 11, 11);
         fuelAnzeige.drehe(0,0,180);
         fuelAnzeige.drehe(0,180,0);
         fuelAnzeige.setzeTextur("src/img/fuelTank.png");
         fuelAnzeige.setzeKamerafixierung(true);
 
-        fuelStandRahmen = new GLTafel(548, -5.1, 400.5, 60, 11);
+        fuelStandRahmen = new GLTafel(540, -5.1, 400.5, 60, 10);
         fuelStandRahmen.setzeTextur("src/img/FuelHintergrund.jpg");
         fuelStandRahmen.setzeKamerafixierung(true);
 
-        fuelStand = new GLTafel(548, -5.1, 401, 55, 9);
+        fuelStand = new GLTafel(540, -5.1, 401, 55, 8);
         fuelStand.setzeFarbe(0,0.5,0);
         fuelStand.setzeKamerafixierung(true);
 
-        fuelLeerText= new GLTafel(548, -5.1, 401, 55, 9);
+        fuelLeerText= new GLTafel(540, -5.1, 401, 55, 9);
         fuelLeerText.setzeFarbe(0.5,0,0);
         fuelLeerText.setzeText("Der Tank ist leer!",4);
         fuelLeerText.setzeKamerafixierung(true);
         fuelLeerText.setzeSichtbarkeit(false);
 
-        levelAnzeige = new GLTafel(600, -5, 401, 10, 10);
+        energieAnzeige = new GLTafel(629, -5, 401, 12, 12);
+        energieAnzeige.drehe(0,0,180);
+        energieAnzeige.drehe(0,180,0);
+        energieAnzeige.setzeTextur("src/img/EnergieFlamme.png");
+        energieAnzeige.setzeKamerafixierung(true);
+
+        energieStandRahmen = new GLTafel(659, -5.1, 400.5, 50, 10);
+        energieStandRahmen.setzeTextur("src/img/FuelHintergrund.jpg");
+        energieStandRahmen.setzeKamerafixierung(true);
+
+        energieStand = new GLTafel(659, -5.1, 401, 45, 8);
+        energieStand.setzeFarbe(0,0,0.5);
+        energieStand.setzeKamerafixierung(true);
+
+
+
+        levelAnzeige = new GLTafel(603, -5, 401, 9, 9);
         levelAnzeige.setzeTextur("src/img/LeisteRahmen.png");
         levelAnzeige.setzeKamerafixierung(true);
 
-        schildanzeige = new GLTafel(660, -5, 401, 10, 10);
+        schildanzeige = new GLTafel(578, -5, 402, 9, 9);
         schildanzeige.drehe(0,0,180);
         schildanzeige.setzeTextur("src/img/Schild.png");
         schildanzeige.setzeKamerafixierung(true);
         schildanzeige.setzeSichtbarkeit(false);
 
         //Stellt den Hintergund fü die anderen Widgets dar---------------------
-        sidebar = new GLTafel(600, -5, 400, 190, 15);
+        sidebar = new GLTafel(599, -5, 400, 202, 15);
         sidebar.setzeTextur("src/img/Leiste.png");
         sidebar.setzeKamerafixierung(true);
 
-        sidebarRahmen = new GLTafel(600, -5, 399, 196, 17);
+        sidebarRahmen = new GLTafel(600, -5, 399, 212, 17);
         sidebarRahmen.setzeTextur("src/img/LeisteRahmen.png");
         sidebarRahmen.setzeKamerafixierung(true);
 
@@ -156,7 +174,15 @@ public class Ufospiel {
         tankGesammelt();
         fuelAuffuellen();
         schildGesammelt();
+        schiessen();
         Sys.warte();
+    }
+    public void schiessen(){
+        if  (tastatur.enter()) {
+            Sys.warte(10);
+            energieVerbrauchen();
+        }
+
     }
 
     public void ufobewegung() {
@@ -415,7 +441,7 @@ public class Ufospiel {
         kamera.setzeBlickpunkt(ufoPX, ufoPY, -2000);
 
        // x und y Koordinate um die fuelleiste Anzupassen
-        neueXkoordinate=kamera.gibX()-52;
+        neueXkoordinate=kamera.gibX()-60;
         neueYkoordinate=kamera.gibY()-45.1;
         neueZkoordinate= kamera.gibZ()-99;
     }
@@ -644,5 +670,21 @@ public class Ufospiel {
             tankleer = true;
             fuelStand.setzeSichtbarkeit(false);
         }
+    }
+    public void energieVerbrauchen() {
+
+        energieZahl = (energieZahl + 0.0095) ;
+        energieSkalierung   = energieSkalierung * energieSkalierung;
+        energieStand.skaliere(energieSkalierung, 1, 1);
+
+
+
+        double neueXkoordinateAngepasst = neueXkoordinate - energieZahl ;
+        energieStand.setzeKamerafixierung(false);
+        energieStand.setzePosition(neueXkoordinateAngepasst+100, neueYkoordinate+1, neueZkoordinate+2);
+        energieStand.setzeKamerafixierung(true);
+
+
+
     }
 }
