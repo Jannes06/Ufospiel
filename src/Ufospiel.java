@@ -7,13 +7,14 @@ public class Ufospiel {
     //private GLHimmel himmel;
 
     private Ufo dasUfo;
+    private Schuss[] schuss;
     private FuelTank tank;
     private Schild schild;
     private Asteroid[] asteroiden;
 
     private Coin[] coin;
     private Coin coinNR1;
-    private GLTafel energieAnzeige,energieStand,energieStandRahmen,schildanzeige,fuelAnzeige,fuelStand,fuelStandRahmen,fuelLeerText,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
+    private GLTafel munitionAnzeige,munitionStand,schildanzeige,fuelAnzeige,fuelStand,fuelStandRahmen,fuelLeerText,sidebar,sidebarRahmen, coinAnzeige, levelAnzeige,levelUpAnzeige,hintergrund1,hintergrund2,hintergrund3,hintergrund4;
     double asteroidPX;
     double asteroidPY;
     double asteroidPZ;
@@ -23,7 +24,7 @@ public class Ufospiel {
     double milisek = 0;
     int rundenNR = 1;
     int backsetzer = 0;
-    int asteroidenAnzahl = 10;
+    int asteroidenAnzahl = 300;
     int coinAnzahl = 0;
     int gesammelteCoins = 0;
     boolean autopilot = false;
@@ -41,6 +42,15 @@ public class Ufospiel {
     int unzerstoerbarkeitsCooldown;
     double energieZahl= 0;
     double energieSkalierung = 0.999;
+    int munitionsstand = 20;
+
+    int aufladetimer = 0;
+    int schusspause = 0;
+    boolean geschossen= false;
+    int schussAnzahl =0;
+    double schussPX;
+    double schussPY;
+    double schussPZ;
 
 
     public Ufospiel() {
@@ -93,19 +103,19 @@ public class Ufospiel {
         fuelLeerText.setzeKamerafixierung(true);
         fuelLeerText.setzeSichtbarkeit(false);
 
-        energieAnzeige = new GLTafel(629, -5, 401, 12, 12);
-        energieAnzeige.drehe(0,0,180);
-        energieAnzeige.drehe(0,180,0);
-        energieAnzeige.setzeTextur("src/img/EnergieFlamme.png");
-        energieAnzeige.setzeKamerafixierung(true);
 
-        energieStandRahmen = new GLTafel(659, -5.1, 400.5, 50, 10);
-        energieStandRahmen.setzeTextur("src/img/FuelHintergrund.jpg");
-        energieStandRahmen.setzeKamerafixierung(true);
 
-        energieStand = new GLTafel(659, -5.1, 401, 45, 8);
-        energieStand.setzeFarbe(0,0,0.5);
-        energieStand.setzeKamerafixierung(true);
+        munitionAnzeige = new GLTafel(670, -5, 401.5, 12, 12);
+        munitionAnzeige.drehe(0,0,180);
+        munitionAnzeige.drehe(0,180,0);
+        munitionAnzeige.setzeTextur("src/img/Munition.png");
+        munitionAnzeige.setzeKamerafixierung(true);
+
+
+        munitionStand = new GLTafel(660, -5.1, 401, 25, 9);
+        munitionStand.setzeTextur("src/img/FuelHintergrund.jpg");
+        munitionStand.setzeTextfarbe(1,1,1);
+        munitionStand.setzeKamerafixierung(true);
 
 
 
@@ -135,10 +145,13 @@ public class Ufospiel {
         levelUpAnzeige.setzeKamerafixierung(true);
         levelUpAnzeige.setzeSichtbarkeit(false);
 
-        asteroiden = new Asteroid[asteroidenAnzahl];
-        for (int i = 0; i < asteroidenAnzahl; i++) {
-            asteroiden[i] = new Asteroid(dasUfo, coinNR1, Math.random() * 30 + 10);
-        }
+        schuss = new Schuss[10000];
+
+
+            asteroiden = new Asteroid[asteroidenAnzahl];
+            for (int i = 0; i < asteroidenAnzahl; i++) {
+                asteroiden[i] = new Asteroid(dasUfo,coinNR1, Math.random() * 30 + 10);
+            }
 
         //coinNR1 ist unser Standart Coin, ihn gibt es immer und der autopilot kann diesen Anvisieren
         coinNR1 = new Coin(dasUfo);
@@ -175,17 +188,46 @@ public class Ufospiel {
         fuelAuffuellen();
         schildGesammelt();
         schiessen();
+        munitionAufladen();
         Sys.warte();
     }
-    public void schiessen(){
-        if  (tastatur.enter()) {
-            Sys.warte(10);
-            energieVerbrauchen();
+    public void schiessen() {
+        schusspause = schusspause + 1;
+
+        if ((tastatur.enter()) && (schusspause > 100) && (munitionsstand > 0)) {
+
+            schuss[schussAnzahl] = new Schuss(dasUfo);
+            schussAnzahl = schussAnzahl + 1;
+
+            geschossen = true;
+            schusspause = 0;
+            munitionVerbrauchen();
         }
 
+        for (int y = 0; y < schussAnzahl ;y++) {
+            //if (geschossen == true) {
+                schuss[y].abschuss();
+
+            for (int i = 0; i < asteroidenAnzahl; i++) {
+
+                hitradius = asteroiden[i].radius();
+                schussPX = schuss[y].gibX();
+                schussPY = schuss[y].gibY();
+                schussPZ = schuss[y].gibZ();
+                asteroidPX = asteroiden[i].gibX();
+                asteroidPY = asteroiden[i].gibY();
+                asteroidPZ = asteroiden[i].gibZ();
+                double individuelleHitbox = hitradius * 0.95;
+                //Hier wird gecheckt, ob der Schuss einen Asteroiden berühren würde und dementsprechend nach links bewegt.-------------------------------------------------------------------------------------------------
+                if (((schussPX < asteroidPX + individuelleHitbox + 30) & (schussPX > asteroidPX - individuelleHitbox - 30)) & ((schussPY < asteroidPY + individuelleHitbox) & (schussPY > asteroidPY - individuelleHitbox)) & ((schussPZ < asteroidPZ + 500) & (schussPZ > asteroidPZ)) ) {
+                  asteroiden[i].asteroidZuruecksetzen();
+                    schuss[y].loesche();
+                }
+            }
+        }
     }
 
-    public void ufobewegung() {
+            public void ufobewegung() {
         if (tankleer==false) {
             if (tastatur.links()) {
                 linksbewegung();
@@ -381,6 +423,7 @@ public class Ufospiel {
                     auffuellen = true;
                     fuelZahl = 0;
                     tankleer = false;
+                    munitionsstand = 20;
                 }
 
             }
@@ -671,20 +714,19 @@ public class Ufospiel {
             fuelStand.setzeSichtbarkeit(false);
         }
     }
-    public void energieVerbrauchen() {
-
-        energieZahl = (energieZahl + 0.0095) ;
-        energieSkalierung   = energieSkalierung * energieSkalierung;
-        energieStand.skaliere(energieSkalierung, 1, 1);
+    public void munitionVerbrauchen() {
+    munitionsstand = munitionsstand -1 ;
 
 
+    }
 
-        double neueXkoordinateAngepasst = neueXkoordinate - energieZahl ;
-        energieStand.setzeKamerafixierung(false);
-        energieStand.setzePosition(neueXkoordinateAngepasst+100, neueYkoordinate+1, neueZkoordinate+2);
-        energieStand.setzeKamerafixierung(true);
+    public void munitionAufladen() {
+        munitionStand.setzeText(""+munitionsstand,7);
 
-
-
+    aufladetimer = aufladetimer+1;
+    if ((aufladetimer > 1800) &&(munitionsstand<20) ){
+        aufladetimer = 0;
+        munitionsstand = munitionsstand + 1;
+    }
     }
 }

@@ -3,6 +3,7 @@ import GLOOP.*;
 public class Asteroid {
     GLKugel asteroid;
     private Ufo dasUfo;
+    private Schuss[] schuss;
     double speedRadius; //Damit man die Geschwindigkeit auf den Radius anpassen kann, und die Hitbox angegeben werden kann.
 
     double asteroidPX;
@@ -20,7 +21,9 @@ public class Asteroid {
         asteroid.setzeSkalierung(Math.random() * 1.1 + 0.4, Math.random() * 1.1 + 0.4, Math.random() * 1.1 + 0.4);
         speedRadius = Radius;
         dasUfo = pUfo;
-    }
+
+        }
+
 
     public void fallen() {
         asteroid.verschiebe(0, 0, +20 / speedRadius);
@@ -63,7 +66,7 @@ public class Asteroid {
         asteroidPY = asteroid.gibY();
         asteroidPZ = asteroid.gibZ();
         double individuelleHitbox = speedRadius * 0.95;
-        //Hier wird gecheckt, ob das Ufo ein Asteroiden berührt.
+        //Hier wird gecheckt, ob das Ufo einen Asteroiden berührt.
         if (((ufoPX < asteroidPX + individuelleHitbox) & (ufoPX > asteroidPX - individuelleHitbox)) & ((ufoPY < asteroidPY + individuelleHitbox) & (ufoPY > asteroidPY - individuelleHitbox)) & ((ufoPZ < asteroidPZ + individuelleHitbox) & (ufoPZ > asteroidPZ - individuelleHitbox))) {
             return true;
 
@@ -71,6 +74,7 @@ public class Asteroid {
             return false;
         }
     }
+
 
     public void kuenstlicheIntelligenz() {
         ufoPX = dasUfo.gibX();
