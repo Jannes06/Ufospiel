@@ -42,7 +42,7 @@ public class Ufospiel {
     int unzerstoerbarkeitsCooldown;
     double energieZahl= 0;
     double energieSkalierung = 0.999;
-    int munitionsstand = 20;
+    int munitionsstand = 10;
 
     int aufladetimer = 0;
     int schusspause = 0;
@@ -219,7 +219,7 @@ public class Ufospiel {
                 asteroidPZ = asteroiden[i].gibZ();
                 double individuelleHitbox = hitradius * 0.95;
                 //Hier wird gecheckt, ob der Schuss einen Asteroiden berühren würde und dementsprechend nach links bewegt.-------------------------------------------------------------------------------------------------
-                if (((schussPX < asteroidPX + individuelleHitbox + 30) & (schussPX > asteroidPX - individuelleHitbox - 30)) & ((schussPY < asteroidPY + individuelleHitbox) & (schussPY > asteroidPY - individuelleHitbox)) & ((schussPZ < asteroidPZ + 500) & (schussPZ > asteroidPZ)) ) {
+                if (((schussPX < asteroidPX + individuelleHitbox ) & (schussPX > asteroidPX - individuelleHitbox )) & ((schussPY < asteroidPY + individuelleHitbox) & (schussPY > asteroidPY - individuelleHitbox)) & ((schussPZ < asteroidPZ + individuelleHitbox) & (schussPZ > asteroidPZ)) ) {
                   asteroiden[i].asteroidZuruecksetzen();
                     schuss[y].loesche();
                 }
@@ -423,7 +423,7 @@ public class Ufospiel {
                     auffuellen = true;
                     fuelZahl = 0;
                     tankleer = false;
-                    munitionsstand = 20;
+                    munitionsstand = 10;
                 }
 
             }
@@ -723,8 +723,10 @@ public class Ufospiel {
     public void munitionAufladen() {
         munitionStand.setzeText(""+munitionsstand,7);
 
-    aufladetimer = aufladetimer+1;
-    if ((aufladetimer > 1800) &&(munitionsstand<20) ){
+        if (munitionsstand<10) {
+            aufladetimer = aufladetimer + 1;
+        }
+    if ((aufladetimer > 1800) &&(munitionsstand<10) ){
         aufladetimer = 0;
         munitionsstand = munitionsstand + 1;
     }
