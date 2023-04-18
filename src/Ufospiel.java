@@ -726,7 +726,7 @@ public class Ufospiel {
         if (munitionsstand<10) {
             aufladetimer = aufladetimer + 1;
         }
-    if ((aufladetimer > 1800) &&(munitionsstand<10) ){
+    if ((aufladetimer > 2500) &&(munitionsstand<10) ){
         aufladetimer = 0;
         munitionsstand = munitionsstand + 1;
     }
